@@ -13,6 +13,7 @@ class SSLPinningService {
         enum KeyType {
             case RSA
             case EC
+            @available(iOS 10.0, *)
             case ECSECPrimeRandom
             
             func cfSecString() -> CFString {
@@ -22,7 +23,11 @@ class SSLPinningService {
                 case .RSA:
                     return kSecAttrKeyTypeRSA
                 case .ECSECPrimeRandom:
-                    return kSecAttrKeyTypeECSECPrimeRandom
+                    if #available(iOS 10.0, *) {
+                        return kSecAttrKeyTypeECSECPrimeRandom
+                    } else {
+                        return kSecAttrKeyTypeEC
+                    }
                 }
             }
         }
