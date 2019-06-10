@@ -19,7 +19,9 @@ public final class FlexNetService<T: Decodable, E: DecodableError>: NSObject, Se
     
     public var responseHandler: HTTPResponseHandler<T, E>? = HTTPResponseHandler<T, E>()
     public var request: HTTPRequestRepresentable?
-    var logger: Logger = BaseLogger()
+    public var logger: Logger = BaseLogger()
+    public var preRequestCallback: (() -> ())?
+    public var requestPreparator: RequestPreparator? = BaseRequestPreparator()
     
     private var successHandler: SuccessHandlerBlock?
     private var failureHandler: FailureHandlerBlock?
@@ -32,8 +34,6 @@ public final class FlexNetService<T: Decodable, E: DecodableError>: NSObject, Se
     private var currentResponse: ResponseRepresentable?
     private var processOnlyLastPage = false
     private var mustNotInvalidateOnEnd = false
-    
-    var requestPreparator: RequestPreparator? = BaseRequestPreparator()
     
     private lazy var session: URLSession = {
         let session = URLSession(configuration: FlexNetServiceConfiguration.urlSessionConfiguration ?? .default,
@@ -60,7 +60,7 @@ public final class FlexNetService<T: Decodable, E: DecodableError>: NSObject, Se
         }
         
         logger.logRequest(request)
-        
+        preRequestCallback?()
         session.dataTask(with: urlRequest) { [weak self] (data, response, error) in
             guard let strongSelf = self else { return }
             

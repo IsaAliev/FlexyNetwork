@@ -9,5 +9,5 @@
 import Foundation
 
 open class Cacher<T: Decodable> {
-    public func cache(_ result: T) {}
+    open func cache(_ result: T) {}
 }

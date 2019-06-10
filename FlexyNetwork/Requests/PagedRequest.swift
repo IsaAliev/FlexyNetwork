@@ -18,6 +18,8 @@ open class PagedRequest<T: Decodable>: HTTPGETRequest {
     open var parameters: JSON? = [String: Any]()
     open var headerFields: [String : String]?
 
+    public init() {}
+    
     open func prepareForNext(with response: T) {
 
     }

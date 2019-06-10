@@ -9,6 +9,8 @@
 import Foundation
 
 public struct BaseSuccessResponseChecker: SuccessResponseChecker {
+    public init() {}
+    
     public func isSuccessResponse(_ response: ResponseRepresentable) -> Bool {
         guard let httpResponse = response.response as? HTTPURLResponse else {
             return false

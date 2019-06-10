@@ -21,9 +21,14 @@ public protocol HTTPRequestRepresentable {
     var parameters: JSON? { get set }
     var headerFields: [String: String]? { get set }
     var body: Data? { get set }
+    var allowPreparation: Bool { get }
 }
 
 public extension HTTPRequestRepresentable {
+    var allowPreparation: Bool {
+        return true
+    }
+    
     func urlRequest() -> URLRequest? {
         guard var urlComponents = URLComponents(string: self.path) else {
             return nil
