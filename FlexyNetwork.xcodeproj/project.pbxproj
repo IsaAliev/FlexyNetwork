@@ -34,7 +34,7 @@
 		CEC5337A22AD7DAB00A3636A /* BaseResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC5333E22AD7D1900A3636A /* BaseResponse.swift */; };
 		CEC5337B22AD7DAB00A3636A /* ResponseRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC5333F22AD7D1900A3636A /* ResponseRepresentable.swift */; };
 		CEC5337C22AD7DAB00A3636A /* Service.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC5334D22AD7D1900A3636A /* Service.swift */; };
-		CEC5337D22AD7DAB00A3636A /* BaseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC5334E22AD7D1900A3636A /* BaseService.swift */; };
+		CEC5337D22AD7DAB00A3636A /* FlexNetService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC5334E22AD7D1900A3636A /* FlexNetService.swift */; };
 		CEC5337E22AD7DAB00A3636A /* SSLPinningService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC5334F22AD7D1900A3636A /* SSLPinningService.swift */; };
 		CEC5337F22AD7DAB00A3636A /* BaseSuccessResponseChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC5334122AD7D1900A3636A /* BaseSuccessResponseChecker.swift */; };
 		CEC5338022AD7DAB00A3636A /* SuccessResponseChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC5334222AD7D1900A3636A /* SuccessResponseChecker.swift */; };
@@ -59,7 +59,7 @@
 		CEC5334A22AD7D1900A3636A /* BodyCreator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BodyCreator.swift; sourceTree = "<group>"; };
 		CEC5334B22AD7D1900A3636A /* HTTPGETRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPGETRequest.swift; sourceTree = "<group>"; };
 		CEC5334D22AD7D1900A3636A /* Service.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Service.swift; sourceTree = "<group>"; };
-		CEC5334E22AD7D1900A3636A /* BaseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseService.swift; sourceTree = "<group>"; };
+		CEC5334E22AD7D1900A3636A /* FlexNetService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlexNetService.swift; sourceTree = "<group>"; };
 		CEC5334F22AD7D1900A3636A /* SSLPinningService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SSLPinningService.swift; sourceTree = "<group>"; };
 		CEC5335122AD7D1900A3636A /* ErrorHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorHandler.swift; sourceTree = "<group>"; };
 		CEC5335322AD7D1900A3636A /* Data+String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+String.swift"; sourceTree = "<group>"; };
@@ -184,7 +184,7 @@
 			isa = PBXGroup;
 			children = (
 				CEC5334D22AD7D1900A3636A /* Service.swift */,
-				CEC5334E22AD7D1900A3636A /* BaseService.swift */,
+				CEC5334E22AD7D1900A3636A /* FlexNetService.swift */,
 				CEC5334F22AD7D1900A3636A /* SSLPinningService.swift */,
 			);
 			path = Services;
@@ -322,7 +322,7 @@
 				CEC5336222AD7DAB00A3636A /* APIBuilder.swift in Sources */,
 				CEC5337022AD7DAB00A3636A /* BaseRequestPreparator.swift in Sources */,
 				CEC5337E22AD7DAB00A3636A /* SSLPinningService.swift in Sources */,
-				CEC5337D22AD7DAB00A3636A /* BaseService.swift in Sources */,
+				CEC5337D22AD7DAB00A3636A /* FlexNetService.swift in Sources */,
 				CEC5336822AD7DAB00A3636A /* Data+String.swift in Sources */,
 				CEC5337C22AD7DAB00A3636A /* Service.swift in Sources */,
 				CEC5336622AD7DAB00A3636A /* StringDecodingProcessor.swift in Sources */,

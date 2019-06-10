@@ -10,7 +10,7 @@ import Foundation
 
 struct DummyDecodable: DecodableError {}
 
-public class APIBuilder<E: DecodableError> {
+open class APIBuilder<E: DecodableError> {
     var dummyService = FlexNetService<DummyDecodable, DummyDecodable>()
     
     public init() {}

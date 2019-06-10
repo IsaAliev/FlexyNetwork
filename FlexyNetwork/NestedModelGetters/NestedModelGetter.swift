@@ -17,7 +17,7 @@ public protocol NestedModelGetter {
     var escapedModelKey: String { get }
 }
 
-extension NestedModelGetter {
+public extension NestedModelGetter {
     var escapedModelKey: String {
         return "escaped"
     }

@@ -27,6 +27,8 @@ public class HTTPResponseHandler<T: Decodable, E: DecodableError>: ResponseHandl
     var cacher: Cacher<T>?
     var headersHandler: HeadersHandler?
     
+    public init() {}
+    
     public func handleResponse(_ response: ResponseRepresentable, completion: (Result<T, E>?, ClientSideError?) -> ()) {
         if let headers = (response.response as? HTTPURLResponse)?.allHeaderFields {
             headersHandler?.handleHeaders(headers)

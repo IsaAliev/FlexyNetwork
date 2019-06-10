@@ -10,12 +10,12 @@ import Foundation
 
 public protocol HTTPGETRequest: HTTPRequestRepresentable { }
 
-extension HTTPGETRequest {
-    public var httpMethod: HTTPMethod {
+public extension HTTPGETRequest {
+    var httpMethod: HTTPMethod {
         return .GET
     }
     
-    public var body: Data? {
+    var body: Data? {
         get {
             return nil
         }

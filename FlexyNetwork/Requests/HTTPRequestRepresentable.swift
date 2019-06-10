@@ -23,7 +23,7 @@ public protocol HTTPRequestRepresentable {
     var body: Data? { get set }
 }
 
-extension HTTPRequestRepresentable {
+public extension HTTPRequestRepresentable {
     func urlRequest() -> URLRequest? {
         guard var urlComponents = URLComponents(string: self.path) else {
             return nil

@@ -10,7 +10,7 @@ import Foundation
 
 public protocol HTTPPOSTRequest: HTTPRequestRepresentable { }
 
-extension HTTPPOSTRequest {
+public extension HTTPPOSTRequest {
     var httpMethod: HTTPMethod {
         return .POST
     }

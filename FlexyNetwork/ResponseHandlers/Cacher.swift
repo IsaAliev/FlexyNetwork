@@ -8,6 +8,6 @@
 
 import Foundation
 
-public class Cacher<T: Decodable> {
+open class Cacher<T: Decodable> {
     public func cache(_ result: T) {}
 }

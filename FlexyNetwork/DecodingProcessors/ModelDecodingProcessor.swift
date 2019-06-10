@@ -8,7 +8,7 @@
 
 import Foundation
 
-public class ModelDecodingProcessor<T: Decodable>: DecodingProcessor {
+open class ModelDecodingProcessor<T: Decodable>: DecodingProcessor {
     public typealias DecodingResult = T
     
     public func decodeFrom(_ data: Data) throws -> T {
