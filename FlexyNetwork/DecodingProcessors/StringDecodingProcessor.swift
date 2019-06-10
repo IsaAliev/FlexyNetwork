@@ -13,7 +13,7 @@ public enum StringDecodingError: Error {
 }
 
 public class StringDecodingProcessor: ModelDecodingProcessor<String> {
-    var encoding: String.Encoding = .utf8
+    open var encoding: String.Encoding = .utf8
     
     override public func decodeFrom(_ data: Data) throws -> String {
         if let string = String(bytes: data, encoding: encoding) {
