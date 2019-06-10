@@ -20,12 +20,12 @@ public class HTTPResponseHandler<T: Decodable, E: DecodableError>: ResponseHandl
             T.self == Float.self
     }
     
-    var errorHandler: ErrorHandler?
-    var successResponseChecker: SuccessResponseChecker = BaseSuccessResponseChecker()
-    var decodingProcessor = ModelDecodingProcessor<T>()
-    var nestedModelGetter: NestedModelGetter?
-    var cacher: Cacher<T>?
-    var headersHandler: HeadersHandler?
+    open var errorHandler: ErrorHandler?
+    open var successResponseChecker: SuccessResponseChecker = BaseSuccessResponseChecker()
+    open var decodingProcessor = ModelDecodingProcessor<T>()
+    open var nestedModelGetter: NestedModelGetter?
+    open var cacher: Cacher<T>?
+    open var headersHandler: HeadersHandler?
     
     public init() {}
     

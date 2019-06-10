@@ -15,43 +15,43 @@ open class APIBuilder<E: DecodableError> {
     
     public init() {}
     
-    public func setLoger(_ loger: Logger) -> Self {
+    open func setLoger(_ loger: Logger) -> Self {
         dummyService.logger = loger
         
         return self
     }
     
-    public func setHeadersHandler(_ handler: HeadersHandler) -> Self {
+    open func setHeadersHandler(_ handler: HeadersHandler) -> Self {
         dummyService.responseHandler?.headersHandler = handler
         
         return self
     }
     
-    public func setRequestPreparator(_ preparator: RequestPreparator) -> Self {
+    open func setRequestPreparator(_ preparator: RequestPreparator) -> Self {
         dummyService.requestPreparator = preparator
         
         return self
     }
     
-    public func setNestedModelGetter(_ modelGetter: NestedModelGetter) -> Self {
+    open func setNestedModelGetter(_ modelGetter: NestedModelGetter) -> Self {
         dummyService.responseHandler?.nestedModelGetter = modelGetter
         
         return self
     }
     
-    public func setSuccessResponseChecker(_ responseChecker: SuccessResponseChecker) -> Self {
+    open func setSuccessResponseChecker(_ responseChecker: SuccessResponseChecker) -> Self {
         dummyService.responseHandler?.successResponseChecker = responseChecker
         
         return self
     }
     
-    public func setRequest(_ request: HTTPRequestRepresentable) -> Self {
+    open func setRequest(_ request: HTTPRequestRepresentable) -> Self {
         dummyService.request = request
         
         return self
     }
     
-    public func build<T>(for responseType: T.Type, andDecodingProcessor processor: ModelDecodingProcessor<T>? = nil) -> FlexNetService<T, E> {
+    open func build<T>(for responseType: T.Type, andDecodingProcessor processor: ModelDecodingProcessor<T>? = nil) -> FlexNetService<T, E> {
         let service = FlexNetService<T, E>()
         
         service.request = dummyService.request

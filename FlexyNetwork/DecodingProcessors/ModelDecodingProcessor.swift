@@ -11,7 +11,7 @@ import Foundation
 open class ModelDecodingProcessor<T: Decodable>: DecodingProcessor {
     public typealias DecodingResult = T
     
-    public func decodeFrom(_ data: Data) throws -> T {
+    open func decodeFrom(_ data: Data) throws -> T {
         let decoder = JSONDecoder()
         
         let model = try decoder.decode(T.self, from: data)

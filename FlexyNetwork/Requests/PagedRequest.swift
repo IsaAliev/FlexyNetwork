@@ -8,21 +8,21 @@
 
 import Foundation
 
-public class PagedRequest<T: Decodable>: HTTPGETRequest {
-    public var path: String {
+open class PagedRequest<T: Decodable>: HTTPGETRequest {
+    open var path: String {
         return ""
     }
     
-    var isPagesDidEnd: Bool = false
+    open var isPagesDidEnd: Bool = false
 
-    public var parameters: JSON? = [String: Any]()
-    public var headerFields: [String : String]?
+    open var parameters: JSON? = [String: Any]()
+    open var headerFields: [String : String]?
 
-    func prepareForNext(with response: T) {
+    open func prepareForNext(with response: T) {
 
     }
 
-    func resetToStart() {
+    open func resetToStart() {
 
     }
 }
