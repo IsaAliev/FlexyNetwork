@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
   spec.name         = "FlexyNetwork"
-  spec.version      = "0.0.9"
+  spec.version      = "0.0.10"
   spec.summary      = "iOS Networking Framework for common tasks"
   spec.description  = <<-DESC
 iOS Networking Framework for common tasks
