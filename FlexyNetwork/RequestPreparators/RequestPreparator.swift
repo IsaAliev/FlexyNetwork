@@ -9,5 +9,15 @@
 import Foundation
 
 public protocol RequestPreparator {
-    func prepareRequest(_ request: inout HTTPRequestRepresentable)
+    mutating func prepareRequest(_ request: inout HTTPRequestRepresentable)
+}
+
+public extension RequestPreparator {
+    func addFields(_ fields: [String: String], to request: inout HTTPRequestRepresentable) {
+        if request.headerFields != nil {
+            request.headerFields?.merge(dict: fields)
+        } else {
+            request.headerFields = fields
+        }
+    }
 }

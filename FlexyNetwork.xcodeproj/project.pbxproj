@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4360BB2E22B3AE410030B308 /* ContentType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4360BB2D22B3AE410030B308 /* ContentType.swift */; };
 		CEC5333122AD7C8600A3636A /* FlexyNetwork.h in Headers */ = {isa = PBXBuildFile; fileRef = CEC5332F22AD7C8600A3636A /* FlexyNetwork.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CEC5336222AD7DAB00A3636A /* APIBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC5335C22AD7D1A00A3636A /* APIBuilder.swift */; };
 		CEC5336322AD7DAB00A3636A /* DecodingProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC5335722AD7D1A00A3636A /* DecodingProcessor.swift */; };
@@ -41,6 +42,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		4360BB2D22B3AE410030B308 /* ContentType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentType.swift; sourceTree = "<group>"; };
 		CEC5332C22AD7C8600A3636A /* FlexyNetwork.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = FlexyNetwork.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CEC5332F22AD7C8600A3636A /* FlexyNetwork.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FlexyNetwork.h; sourceTree = "<group>"; };
 		CEC5333022AD7C8600A3636A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -176,6 +178,7 @@
 				CEC5334922AD7D1900A3636A /* PagedRequest.swift */,
 				CEC5334A22AD7D1900A3636A /* BodyCreator.swift */,
 				CEC5334B22AD7D1900A3636A /* HTTPGETRequest.swift */,
+				4360BB2D22B3AE410030B308 /* ContentType.swift */,
 			);
 			path = Requests;
 			sourceTree = "<group>";
@@ -333,6 +336,7 @@
 				CEC5337A22AD7DAB00A3636A /* BaseResponse.swift in Sources */,
 				CEC5337B22AD7DAB00A3636A /* ResponseRepresentable.swift in Sources */,
 				CEC5336922AD7DAB00A3636A /* Dictionary+Utils.swift in Sources */,
+				4360BB2E22B3AE410030B308 /* ContentType.swift in Sources */,
 				CEC5336C22AD7DAB00A3636A /* BaseLogger.swift in Sources */,
 				CEC5337322AD7DAB00A3636A /* PagedRequest.swift in Sources */,
 				CEC5336522AD7DAB00A3636A /* IntDecodingProcessor.swift in Sources */,

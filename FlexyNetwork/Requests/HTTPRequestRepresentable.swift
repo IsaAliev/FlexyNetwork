@@ -16,6 +16,7 @@ public enum HTTPMethod: String {
 }
 
 public protocol HTTPRequestRepresentable {
+    var contentType: ContentTypeRepresentable { get }
     var path: String { get }
     var httpMethod: HTTPMethod { get }
     var parameters: JSON? { get set }
@@ -25,6 +26,10 @@ public protocol HTTPRequestRepresentable {
 }
 
 public extension HTTPRequestRepresentable {
+    var contentType: ContentTypeRepresentable {
+        return ContentType.NonStandart.urlEncoded
+    }
+    
     var allowPreparation: Bool {
         return true
     }
