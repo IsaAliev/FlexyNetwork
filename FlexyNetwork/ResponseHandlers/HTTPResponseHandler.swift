@@ -8,7 +8,7 @@
 
 import Foundation
 
-public class HTTPResponseHandler<T: Decodable, E: DecodableError>: ResponseHandler {
+public class HTTPResponseHandler<T: Initializable, E: DecodableError>: ResponseHandler {
     public typealias ResultType = T
     public typealias ErrorType = E
     
@@ -22,7 +22,7 @@ public class HTTPResponseHandler<T: Decodable, E: DecodableError>: ResponseHandl
     
     open var errorHandler: ErrorHandler?
     open var successResponseChecker: SuccessResponseChecker = BaseSuccessResponseChecker()
-    open var decodingProcessor = ModelDecodingProcessor<T>()
+    open var decodingProcessor = DecodingProcessor<T>()
     open var nestedModelGetter: NestedModelGetter?
     open var cacher: Cacher<T>?
     open var headersHandler: HeadersHandler?

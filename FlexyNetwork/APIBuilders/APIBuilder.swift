@@ -8,7 +8,11 @@
 
 import Foundation
 
-struct DummyDecodable: DecodableError {}
+struct DummyDecodable: DecodableError, Initializable {
+    static func get() -> Initializable {
+        return DummyDecodable()
+    }
+}
 
 open class APIBuilder<E: DecodableError> {
     var dummyService = FlexNetService<DummyDecodable, DummyDecodable>()
@@ -51,7 +55,7 @@ open class APIBuilder<E: DecodableError> {
         return self
     }
     
-    open func build<T>(for responseType: T.Type, andDecodingProcessor processor: ModelDecodingProcessor<T>? = nil) -> FlexNetService<T, E> {
+    open func build<T>(for responseType: T.Type, andDecodingProcessor processor: DecodingProcessor<T>? = nil) -> FlexNetService<T, E> {
         let service = FlexNetService<T, E>()
         
         service.request = dummyService.request

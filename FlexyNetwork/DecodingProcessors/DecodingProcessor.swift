@@ -8,8 +8,12 @@
 
 import Foundation
 
-public protocol DecodingProcessor {
-    associatedtype DecodingResult
+public protocol Initializable {
+    static func get() -> Initializable
+}
+
+open class DecodingProcessor<T: Initializable> {
+    public init() {}
     
-    func decodeFrom(_ data: Data) throws -> DecodingResult
+    open func decodeFrom(_ data: Data) throws -> T { return T.get() as! T }
 }

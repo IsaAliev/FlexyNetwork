@@ -20,7 +20,7 @@ public enum ClientSideError: String, Error {
 }
 
 public protocol Service {
-    associatedtype ResultType: Decodable
+    associatedtype ResultType: Initializable
     associatedtype ServerSideErrorType: DecodableError
     
     typealias SuccessHandlerBlock = (ResultType) -> ()

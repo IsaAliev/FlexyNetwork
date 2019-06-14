@@ -8,7 +8,7 @@
 
 import Foundation
 
-open class PagedRequest<T: Decodable>: HTTPGETRequest {
+open class PagedRequest<T: Initializable>: HTTPGETRequest {
     open var path: String {
         return ""
     }

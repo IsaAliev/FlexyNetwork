@@ -13,7 +13,7 @@ struct FlexNetServiceConfiguration {
     static var publicKeysForSSLPinningProvider: ((String) -> ([SSLPinningService.PublicKey]?))?
 }
 
-public final class FlexNetService<T: Decodable, E: DecodableError>: NSObject, Service, URLSessionTaskDelegate {
+public final class FlexNetService<T: Initializable, E: DecodableError>: NSObject, Service, URLSessionTaskDelegate {
     public typealias ResultType = T
     public typealias ServerSideErrorType = E
     

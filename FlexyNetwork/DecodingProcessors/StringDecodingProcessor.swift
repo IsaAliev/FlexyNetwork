@@ -12,6 +12,12 @@ public enum StringDecodingError: Error {
     case failedToDecodeString
 }
 
+extension String: Initializable {
+    public static func get() -> Initializable {
+        return ""
+    }
+}
+
 public class StringDecodingProcessor: ModelDecodingProcessor<String> {
     open var encoding: String.Encoding = .utf8
     
