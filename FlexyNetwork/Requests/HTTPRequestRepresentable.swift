@@ -35,10 +35,14 @@ public extension HTTPRequestRepresentable {
     }
     
     func urlRequest() -> URLRequest? {
-        guard var urlComponents = URLComponents(string: self.path) else {
-            return nil
+        var urlComponents: URLComponents!
+        
+        if let comps = URLComponents(string: self.path) {
+            urlComponents = comps
+        } else {
+            urlComponents = URLComponents()
         }
-
+        
         if let parametersJSON = self.parameters {
             var queryItems = [URLQueryItem]()
             for (key, value) in parametersJSON {
@@ -58,18 +62,38 @@ public extension HTTPRequestRepresentable {
             }
             urlComponents.queryItems = queryItems
         }
-
+        
         guard let url = urlComponents.url else {
             return nil
         }
-
+        
         var urlRequest = URLRequest(url: url)
         urlRequest.httpMethod = self.httpMethod.rawValue
         urlRequest.allHTTPHeaderFields = headerFields
+        
+        if urlRequest.allHTTPHeaderFields?["content-type"] == nil {
+            urlRequest.allHTTPHeaderFields?["content-type"] = contentType.fullName()
+        }
+        
+        if urlRequest.allHTTPHeaderFields?["content-length"] == nil {
+            urlRequest.addContentLength()
+        }
+        
         if let body = body {
             urlRequest.httpBody = body
         }
-
+        
         return urlRequest
+    }
+}
+
+extension URLRequest {
+    mutating func addContentLength() {
+        if let body = httpBody {
+            let length = NSData(data: body).length
+            if length > 0 {
+                allHTTPHeaderFields?["Content-Length"] = "\(length)"
+            }
+        }
     }
 }
