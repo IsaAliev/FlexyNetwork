@@ -13,7 +13,7 @@ struct FlexNetServiceConfiguration {
     static var publicKeysForSSLPinningProvider: ((String) -> ([SSLPinningService.PublicKey]?))?
 }
 
-public final class FlexNetService<T: Initializable, E: DecodableError>: NSObject, Service, URLSessionTaskDelegate {
+public final class FlexNetService<T: FlexDecodable, E: DecodableError>: NSObject, Service, URLSessionTaskDelegate {
     public typealias ResultType = T
     public typealias ServerSideErrorType = E
     
@@ -32,6 +32,7 @@ public final class FlexNetService<T: Initializable, E: DecodableError>: NSObject
     private var lastPageHandler: (() -> ())?
     private var handlingQueue: DispatchQueue?
     private var currentResponse: ResponseRepresentable?
+    private var lastModel: ResultType?
     private var processOnlyLastPage = false
     private var mustNotInvalidateOnEnd = false
     
@@ -83,6 +84,7 @@ public final class FlexNetService<T: Initializable, E: DecodableError>: NSObject
                 
                 switch result {
                 case let .success(model):
+                    self.lastModel = model
                     self.preparePagedRequestIfNeeded(with: model)
                     guard self.isRequestPaged() &&
                         self.isPagesEnded() else {
@@ -121,7 +123,7 @@ public final class FlexNetService<T: Initializable, E: DecodableError>: NSObject
     }
     
     public func resetRequest() {
-        guard let pagedRequest = request as? PagedRequest<T> else {
+        guard let pagedRequest = request as? PagedRequest else {
             return
         }
         
@@ -188,15 +190,15 @@ public final class FlexNetService<T: Initializable, E: DecodableError>: NSObject
     }
     
     private func isPagesEnded() -> Bool {
-        if let pagedRequest = request as? PagedRequest<T> {
-            return pagedRequest.isPagesDidEnd
+        if let pageableModel = lastModel as? Pageable {
+            return pageableModel.isPagesDidEnd
         }
         
         return false
     }
     
     private func isRequestPaged() -> Bool {
-        return request is PagedRequest<T>
+        return request is PagedRequest
     }
     
     private func processSuccess(_ model: T) {
@@ -245,11 +247,12 @@ public final class FlexNetService<T: Initializable, E: DecodableError>: NSObject
     }
     
     private func preparePagedRequestIfNeeded(with model: T) {
-        guard let pagedRequest = request as? PagedRequest<T> else {
+        guard let pagedRequest = request as? PagedRequest,
+            let pageableModel = model as? Pageable else {
             return
         }
         
-        pagedRequest.prepareForNext(with: model)
+        pagedRequest.prepareForNextWithCursor(pageableModel.nextCursor)
     }
     
     public func urlSession(_ session: URLSession, task: URLSessionTask, didSendBodyData bytesSent: Int64, totalBytesSent: Int64, totalBytesExpectedToSend: Int64) {

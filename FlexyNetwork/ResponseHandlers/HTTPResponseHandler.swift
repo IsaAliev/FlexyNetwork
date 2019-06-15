@@ -8,7 +8,7 @@
 
 import Foundation
 
-public class HTTPResponseHandler<T: Initializable, E: DecodableError>: ResponseHandler {
+public class HTTPResponseHandler<T: FlexDecodable, E: DecodableError>: ResponseHandler {
     public typealias ResultType = T
     public typealias ErrorType = E
     
@@ -22,7 +22,6 @@ public class HTTPResponseHandler<T: Initializable, E: DecodableError>: ResponseH
     
     open var errorHandler: ErrorHandler?
     open var successResponseChecker: SuccessResponseChecker = BaseSuccessResponseChecker()
-    open var decodingProcessor = DecodingProcessor<T>()
     open var nestedModelGetter: NestedModelGetter?
     open var cacher: Cacher<T>?
     open var headersHandler: HeadersHandler?
@@ -70,7 +69,7 @@ public class HTTPResponseHandler<T: Initializable, E: DecodableError>: ResponseH
             }
         }
 
-        guard let result = try? decodingProcessor.decodeFrom(data) else {
+        guard let result = try? T.decodeFrom(data) else {
             completion(nil, .modelProcessingError)
             
             return
@@ -97,7 +96,7 @@ public class HTTPResponseHandler<T: Initializable, E: DecodableError>: ResponseH
     
     private func processFailureResponse(_ response: ResponseRepresentable, completion: (Result<T, E>?, ClientSideError?) -> ()) {
         guard let data = response.data,
-            let error = try? JSONDecoder().decode(E.self, from: data) else {
+            let error = try? E.decodeFrom(data) else {
                 completion(nil, .errorModelProcessingError)
             
             return
