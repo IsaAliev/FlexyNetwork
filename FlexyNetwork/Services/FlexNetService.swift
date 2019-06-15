@@ -85,19 +85,14 @@ public final class FlexNetService<T: FlexDecodable, E: DecodableError>: NSObject
                 switch result {
                 case let .success(model):
                     self.lastModel = model
-                    self.preparePagedRequestIfNeeded(with: model)
-                    guard self.isRequestPaged() &&
-                        self.isPagesEnded() else {
+                    let isLast = self.processPagedRequestIfNeededWith(model)
+                    if isLast {
+                        if !(self.processOnlyLastPage) {
                             self.processSuccess(model)
-                            
-                            return
-                    }
-                    
-                    if !self.processOnlyLastPage {
+                        }
+                    } else {
                         self.processSuccess(model)
                     }
-                    
-                    self.processLastPage()
                 case let .failure(error):
                     self.processFailure(error)
                 }
@@ -128,6 +123,7 @@ public final class FlexNetService<T: FlexDecodable, E: DecodableError>: NSObject
         }
         
         pagedRequest.resetToStart()
+        lastModel = nil
     }
     
     @discardableResult
@@ -177,6 +173,22 @@ public final class FlexNetService<T: FlexDecodable, E: DecodableError>: NSObject
         lastPageHandler = lastPage
         
         return self
+    }
+    
+    private func processPagedRequestIfNeededWith(_ model: T) -> Bool {
+        guard let pagedRequest = request as? PagedRequest,
+            let pageable = model as? Pageable else {
+            return false
+        }
+        
+        pagedRequest.prepareForNextWithCursor(pageable.nextCursor)
+        
+        if pageable.isPagesDidEnd {
+            processLastPage()
+            return true
+        }
+        
+        return false
     }
     
     private func processLastPageIfNeeded() -> Bool {

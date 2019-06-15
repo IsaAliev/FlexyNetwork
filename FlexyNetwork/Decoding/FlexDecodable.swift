@@ -44,3 +44,21 @@ public extension FlexDecodable where Self : UIImage {
 }
 
 extension UIImage: FlexDecodable {}
+
+extension String: FlexDecodable {
+    public static func decodeFrom(_ data: Data) throws -> String {
+        return String(data: data, encoding: .utf8) ?? ""
+    }
+}
+
+extension Dictionary: FlexDecodable where Key: Decodable, Value: Decodable {
+    public static func decodeFrom(_ data: Data) throws -> Dictionary {
+        return try JSONDecoder().decode(Dictionary.self, from: data)
+    }
+}
+
+extension Array: FlexDecodable where Element: Decodable {
+    public static func decodeFrom(_ data: Data) throws -> Array {
+        return try JSONDecoder().decode(Array.self, from: data)
+    }
+}
