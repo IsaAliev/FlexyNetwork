@@ -8,9 +8,9 @@
 
 import Foundation
 
-class SSLPinningService {
-    struct PublicKey {
-        enum KeyType {
+public class SSLPinningService {
+    public struct PublicKey {
+        public enum KeyType {
             case RSA
             case EC
             @available(iOS 10.0, *)
@@ -35,11 +35,11 @@ class SSLPinningService {
         let base64EncodedKey: String
         var type: KeyType = .RSA
         
-        init(_ key: String) {
+        public init(_ key: String) {
             self.base64EncodedKey = key
         }
         
-        init(_ key: String, ofType type: KeyType) {
+        public init(_ key: String, ofType type: KeyType) {
             self.type = type
             self.base64EncodedKey = key
         }
@@ -93,7 +93,7 @@ class SSLPinningService {
         var ref: CFTypeRef?
         
         let status = SecItemAdd(dict as CFDictionary, &ref)
-
+        
         if status != errSecSuccess || ref == nil {
             return nil
         }
@@ -110,7 +110,7 @@ class SSLPinningService {
             let certificate = SecTrustGetCertificateAtIndex(serverTrust, i)
             let certificates = [certificate] as CFArray
             var trust: SecTrust?
-   
+            
             SecTrustCreateWithCertificates(certificates, policy, &trust)
             
             if trust == nil {
@@ -118,7 +118,7 @@ class SSLPinningService {
             }
             
             var result: SecTrustResultType = .unspecified
-
+            
             SecTrustEvaluate(trust!, &result)
             
             guard result == .unspecified ||

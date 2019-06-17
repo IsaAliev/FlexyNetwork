@@ -8,9 +8,9 @@
 
 import Foundation
 
-struct FlexNetServiceConfiguration {
-    static var urlSessionConfiguration: URLSessionConfiguration?
-    static var publicKeysForSSLPinningProvider: ((String) -> ([SSLPinningService.PublicKey]?))?
+public struct FlexNetServiceConfiguration {
+    public static var urlSessionConfiguration: URLSessionConfiguration?
+    public static var publicKeysForSSLPinningProvider: ((String) -> ([SSLPinningService.PublicKey]?))?
 }
 
 public final class FlexNetService<T: FlexDecodable, E: DecodableError>: NSObject, Service, URLSessionTaskDelegate {
