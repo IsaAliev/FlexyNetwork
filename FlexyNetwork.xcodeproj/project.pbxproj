@@ -8,12 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		4360BB2E22B3AE410030B308 /* ContentType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4360BB2D22B3AE410030B308 /* ContentType.swift */; };
+		CE589E2722B4FE5100F78F84 /* FlexDecodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE589E2622B4FE5100F78F84 /* FlexDecodable.swift */; };
 		CEC5333122AD7C8600A3636A /* FlexyNetwork.h in Headers */ = {isa = PBXBuildFile; fileRef = CEC5332F22AD7C8600A3636A /* FlexyNetwork.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CEC5336222AD7DAB00A3636A /* APIBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC5335C22AD7D1A00A3636A /* APIBuilder.swift */; };
-		CEC5336322AD7DAB00A3636A /* DecodingProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC5335722AD7D1A00A3636A /* DecodingProcessor.swift */; };
-		CEC5336422AD7DAB00A3636A /* ModelDecodingProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC5335822AD7D1A00A3636A /* ModelDecodingProcessor.swift */; };
-		CEC5336522AD7DAB00A3636A /* IntDecodingProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC5335922AD7D1A00A3636A /* IntDecodingProcessor.swift */; };
-		CEC5336622AD7DAB00A3636A /* StringDecodingProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC5335A22AD7D1A00A3636A /* StringDecodingProcessor.swift */; };
 		CEC5336722AD7DAB00A3636A /* ErrorHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC5335122AD7D1900A3636A /* ErrorHandler.swift */; };
 		CEC5336822AD7DAB00A3636A /* Data+String.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC5335322AD7D1900A3636A /* Data+String.swift */; };
 		CEC5336922AD7DAB00A3636A /* Dictionary+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC5335422AD7D1900A3636A /* Dictionary+Utils.swift */; };
@@ -43,6 +40,7 @@
 
 /* Begin PBXFileReference section */
 		4360BB2D22B3AE410030B308 /* ContentType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentType.swift; sourceTree = "<group>"; };
+		CE589E2622B4FE5100F78F84 /* FlexDecodable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlexDecodable.swift; sourceTree = "<group>"; };
 		CEC5332C22AD7C8600A3636A /* FlexyNetwork.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = FlexyNetwork.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CEC5332F22AD7C8600A3636A /* FlexyNetwork.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FlexyNetwork.h; sourceTree = "<group>"; };
 		CEC5333022AD7C8600A3636A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -67,10 +65,6 @@
 		CEC5335322AD7D1900A3636A /* Data+String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+String.swift"; sourceTree = "<group>"; };
 		CEC5335422AD7D1900A3636A /* Dictionary+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Dictionary+Utils.swift"; sourceTree = "<group>"; };
 		CEC5335522AD7D1900A3636A /* String+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Utils.swift"; sourceTree = "<group>"; };
-		CEC5335722AD7D1A00A3636A /* DecodingProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecodingProcessor.swift; sourceTree = "<group>"; };
-		CEC5335822AD7D1A00A3636A /* ModelDecodingProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelDecodingProcessor.swift; sourceTree = "<group>"; };
-		CEC5335922AD7D1A00A3636A /* IntDecodingProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntDecodingProcessor.swift; sourceTree = "<group>"; };
-		CEC5335A22AD7D1A00A3636A /* StringDecodingProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringDecodingProcessor.swift; sourceTree = "<group>"; };
 		CEC5335C22AD7D1A00A3636A /* APIBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIBuilder.swift; sourceTree = "<group>"; };
 		CEC5335E22AD7D1A00A3636A /* ResponseHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponseHandler.swift; sourceTree = "<group>"; };
 		CEC5335F22AD7D1A00A3636A /* HTTPResponseHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPResponseHandler.swift; sourceTree = "<group>"; };
@@ -109,7 +103,7 @@
 			isa = PBXGroup;
 			children = (
 				CEC5335B22AD7D1A00A3636A /* APIBuilders */,
-				CEC5335622AD7D1A00A3636A /* DecodingProcessors */,
+				CEC5335622AD7D1A00A3636A /* Decoding */,
 				CEC5335022AD7D1900A3636A /* ErrorHandling */,
 				CEC5335222AD7D1900A3636A /* Extensions */,
 				CEC5333722AD7D1800A3636A /* Loggers */,
@@ -211,15 +205,12 @@
 			path = Extensions;
 			sourceTree = "<group>";
 		};
-		CEC5335622AD7D1A00A3636A /* DecodingProcessors */ = {
+		CEC5335622AD7D1A00A3636A /* Decoding */ = {
 			isa = PBXGroup;
 			children = (
-				CEC5335722AD7D1A00A3636A /* DecodingProcessor.swift */,
-				CEC5335822AD7D1A00A3636A /* ModelDecodingProcessor.swift */,
-				CEC5335922AD7D1A00A3636A /* IntDecodingProcessor.swift */,
-				CEC5335A22AD7D1A00A3636A /* StringDecodingProcessor.swift */,
+				CE589E2622B4FE5100F78F84 /* FlexDecodable.swift */,
 			);
-			path = DecodingProcessors;
+			path = Decoding;
 			sourceTree = "<group>";
 		};
 		CEC5335B22AD7D1A00A3636A /* APIBuilders */ = {
@@ -321,6 +312,7 @@
 			files = (
 				CEC5337F22AD7DAB00A3636A /* BaseSuccessResponseChecker.swift in Sources */,
 				CEC5336E22AD7DAB00A3636A /* NestedModelGetter.swift in Sources */,
+				CE589E2722B4FE5100F78F84 /* FlexDecodable.swift in Sources */,
 				CEC5337822AD7DAB00A3636A /* Cacher.swift in Sources */,
 				CEC5336222AD7DAB00A3636A /* APIBuilder.swift in Sources */,
 				CEC5337022AD7DAB00A3636A /* BaseRequestPreparator.swift in Sources */,
@@ -328,7 +320,6 @@
 				CEC5337D22AD7DAB00A3636A /* FlexNetService.swift in Sources */,
 				CEC5336822AD7DAB00A3636A /* Data+String.swift in Sources */,
 				CEC5337C22AD7DAB00A3636A /* Service.swift in Sources */,
-				CEC5336622AD7DAB00A3636A /* StringDecodingProcessor.swift in Sources */,
 				CEC5337722AD7DAB00A3636A /* HTTPResponseHandler.swift in Sources */,
 				CEC5337422AD7DAB00A3636A /* BodyCreator.swift in Sources */,
 				CEC5337222AD7DAB00A3636A /* HTTPPOSTRequest.swift in Sources */,
@@ -339,15 +330,12 @@
 				4360BB2E22B3AE410030B308 /* ContentType.swift in Sources */,
 				CEC5336C22AD7DAB00A3636A /* BaseLogger.swift in Sources */,
 				CEC5337322AD7DAB00A3636A /* PagedRequest.swift in Sources */,
-				CEC5336522AD7DAB00A3636A /* IntDecodingProcessor.swift in Sources */,
 				CEC5336B22AD7DAB00A3636A /* Logger.swift in Sources */,
 				CEC5336A22AD7DAB00A3636A /* String+Utils.swift in Sources */,
 				CEC5336722AD7DAB00A3636A /* ErrorHandler.swift in Sources */,
 				CEC5336F22AD7DAB00A3636A /* RequestPreparator.swift in Sources */,
 				CEC5337522AD7DAB00A3636A /* HTTPGETRequest.swift in Sources */,
-				CEC5336422AD7DAB00A3636A /* ModelDecodingProcessor.swift in Sources */,
 				CEC5337122AD7DAB00A3636A /* HTTPRequestRepresentable.swift in Sources */,
-				CEC5336322AD7DAB00A3636A /* DecodingProcessor.swift in Sources */,
 				CEC5337622AD7DAB00A3636A /* ResponseHandler.swift in Sources */,
 				CEC5338022AD7DAB00A3636A /* SuccessResponseChecker.swift in Sources */,
 			);
@@ -499,6 +487,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.ia.FlexyNetwork;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
+				SWIFT_COMPILATION_MODE = singlefile;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

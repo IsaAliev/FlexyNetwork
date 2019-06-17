@@ -25,6 +25,11 @@ public protocol HTTPRequestRepresentable {
     var allowPreparation: Bool { get }
 }
 
+enum HeaderKey: String {
+    case contentType = "Content-Type"
+    case contentLength = "Content-Length"
+}
+
 public extension HTTPRequestRepresentable {
     var contentType: ContentTypeRepresentable {
         return ContentType.NonStandart.urlEncoded
@@ -45,6 +50,7 @@ public extension HTTPRequestRepresentable {
         
         if let parametersJSON = self.parameters {
             var queryItems = [URLQueryItem]()
+            
             for (key, value) in parametersJSON {
                 var valueString = value as? String
                 if valueString == nil {
@@ -60,6 +66,7 @@ public extension HTTPRequestRepresentable {
                 }
                 queryItems.append(URLQueryItem(name: key, value: valueString))
             }
+            
             urlComponents.queryItems = queryItems
         }
         
@@ -71,11 +78,11 @@ public extension HTTPRequestRepresentable {
         urlRequest.httpMethod = self.httpMethod.rawValue
         urlRequest.allHTTPHeaderFields = headerFields
         
-        if urlRequest.allHTTPHeaderFields?["content-type"] == nil {
-            urlRequest.allHTTPHeaderFields?["content-type"] = contentType.fullName()
+        if urlRequest.allHTTPHeaderFields?[HeaderKey.contentType.rawValue] == nil {
+            urlRequest.allHTTPHeaderFields?[HeaderKey.contentType.rawValue] = contentType.fullName()
         }
         
-        if urlRequest.allHTTPHeaderFields?["content-length"] == nil {
+        if urlRequest.allHTTPHeaderFields?[HeaderKey.contentLength.rawValue] == nil {
             urlRequest.addContentLength()
         }
         
@@ -92,7 +99,7 @@ extension URLRequest {
         if let body = httpBody {
             let length = NSData(data: body).length
             if length > 0 {
-                allHTTPHeaderFields?["Content-Length"] = "\(length)"
+                allHTTPHeaderFields?[HeaderKey.contentLength.rawValue] = "\(length)"
             }
         }
     }

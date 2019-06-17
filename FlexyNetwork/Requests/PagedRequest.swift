@@ -8,24 +8,12 @@
 
 import Foundation
 
-open class PagedRequest<T: Decodable>: HTTPGETRequest {
-    open var path: String {
-        return ""
-    }
-    
-    open var isPagesDidEnd: Bool = false
-
-    open var parameters: JSON? = [String: Any]()
-    open var headerFields: [String : String]?
-
-    public init() {}
-    
-    open func prepareForNext(with response: T) {
-
-    }
-
-    open func resetToStart() {
-
-    }
+public protocol PagedRequest: HTTPGETRequest {
+    func prepareForNextWithCursor(_ cursor: String)
+    func resetToStart()
 }
 
+public protocol Pageable {
+    var nextCursor: String { get }
+    var isPagesDidEnd: Bool { get }
+}

@@ -10,7 +10,9 @@ import Foundation
 
 public typealias JSON = [String: Any]
 
-public protocol DecodableError: Error, Decodable {}
+public protocol DecodableError: Error, FlexDecodable {}
+
+public struct FlexNever: DecodableError, Decodable {}
 
 public protocol ResponseHandler {
     associatedtype ResultType
