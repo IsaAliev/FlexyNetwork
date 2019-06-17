@@ -82,7 +82,15 @@ APIBuilder()
 - [x] onLastPage is called when using `PagedRequest` and there is no pages left
 - [x] onProgress is called when progress on POST request has changed
 
+## Easy SSL Pinning
 
+In order to use SSL Pinning in your reqeusts just set public keys provider closure of `FlexNetServiceConfiguration` class:
+
+```swift
+FlexNetServiceConfiguration.publicKeysForSSLPinningProvider = { host in
+    return [SSLPinningService.PublicKey("key", ofType: .RSA)]
+}
+```
 
 
 
