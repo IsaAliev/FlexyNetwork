@@ -70,7 +70,7 @@ APIBuilder()
 - [x] onError is called when there is some client-side error happened
 - [x] onEnd is called when reqeust is finished regardless success or failure
 - [x] onLastPage is called when using `PagedRequest` and there is no pages left
-- [x] onProgress is called when progress on upload/download task has changed
+- [x] onProgress is called when progress on POST request has changed
 
 
 
