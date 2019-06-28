@@ -118,7 +118,7 @@ public final class FlexNetService<T: FlexDecodable, E: DecodableError>: NSObject
     }
     
     public func resetRequest() {
-        guard let pagedRequest = request as? PagedRequest else {
+        guard var pagedRequest = request as? PagedRequest else {
             return
         }
         
@@ -176,7 +176,7 @@ public final class FlexNetService<T: FlexDecodable, E: DecodableError>: NSObject
     }
     
     private func processPagedRequestIfNeededWith(_ model: T) -> Bool {
-        guard let pagedRequest = request as? PagedRequest,
+        guard var pagedRequest = request as? PagedRequest,
             let pageable = model as? Pageable else {
             return false
         }
@@ -259,7 +259,7 @@ public final class FlexNetService<T: FlexDecodable, E: DecodableError>: NSObject
     }
     
     private func preparePagedRequestIfNeeded(with model: T) {
-        guard let pagedRequest = request as? PagedRequest,
+        guard var pagedRequest = request as? PagedRequest,
             let pageableModel = model as? Pageable else {
             return
         }

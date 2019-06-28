@@ -9,8 +9,8 @@
 import Foundation
 
 public protocol PagedRequest: HTTPGETRequest {
-    func prepareForNextWithCursor(_ cursor: String)
-    func resetToStart()
+    mutating func prepareForNextWithCursor(_ cursor: String)
+    mutating func resetToStart()
 }
 
 public protocol Pageable {
