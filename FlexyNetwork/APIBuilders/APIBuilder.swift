@@ -13,8 +13,8 @@ open class APIBuilder {
     
     public init() {}
     
-    open func setLoger(_ loger: Logger) -> Self {
-        dummyService.logger = loger
+    open func setLogger(_ logger: Logger) -> Self {
+        dummyService.logger = logger
         
         return self
     }

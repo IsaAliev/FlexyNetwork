@@ -77,28 +77,46 @@ public class SSLPinningService {
         let tagString = "com.example.key"
         let tag = tagString.data(using: .utf8)
         
-        var dict = [String: Any]()
+        var query = [String: Any]()
         
-        dict[kSecClass as String] = kSecClassKey
-        dict[kSecAttrKeyType as String] = kSecAttrKeyTypeRSA
-        dict[kSecAttrApplicationTag as String] = tag
+        var correctedKeyData = data
         
-        SecItemDelete(dict as CFDictionary);
+        if type == kSecAttrKeyTypeEC {
+            correctedKeyData = data[data.count-65..<data.count]
+        }
         
-        dict[kSecValueData as String] = data
-        dict[kSecAttrKeyClass as String] = kSecAttrKeyClassPublic
-        dict[kSecAttrIsPermanent as String] = false
-        dict[kSecReturnRef as String] = true
+        query[kSecClass as String] = kSecClassKey
+        query[kSecAttrKeyType as String] = type
+        query[kSecAttrApplicationTag as String] = tag
         
-        var ref: CFTypeRef?
+        SecItemDelete(query as CFDictionary);
         
-        let status = SecItemAdd(dict as CFDictionary, &ref)
+        query[kSecValueData as String] = correctedKeyData
+        query[kSecAttrKeyClass as String] = kSecAttrKeyClassPublic
+        query[kSecReturnPersistentRef as String] = kCFBooleanTrue
+
+        var persistKey: CFTypeRef?
         
-        if status != errSecSuccess || ref == nil {
+        var status = SecItemAdd(query as CFDictionary, &persistKey)
+        
+        if status != errSecSuccess && status != errSecDuplicateItem {
             return nil
         }
         
-        return (ref as! SecKey)
+        query[kSecValueData as String] = nil
+        query[kSecReturnPersistentRef as String] = nil
+        query[kSecReturnRef as String] = kCFBooleanTrue
+        query[kSecAttrKeyType as String] = type
+
+        var keyRef: CFTypeRef?
+        
+        status = SecItemCopyMatching(query as CFDictionary, &keyRef)
+        
+        if status != errSecSuccess || keyRef == nil {
+            return nil
+        }
+        
+        return (keyRef as! SecKey)
     }
     
     func publicKeyTrustChainForServerTrust(_ serverTrust: SecTrust) -> [SecKey] {

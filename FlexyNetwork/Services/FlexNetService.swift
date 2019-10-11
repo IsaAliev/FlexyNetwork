@@ -19,7 +19,7 @@ public final class FlexNetService<T: FlexDecodable, E: DecodableError>: NSObject
     
     public var responseHandler: HTTPResponseHandler<T, E>? = HTTPResponseHandler<T, E>()
     public var request: HTTPRequestRepresentable?
-    public var logger: Logger = BaseLogger()
+    public var logger: Logger?
     public var preRequestCallback: (() -> ())?
     public var requestPreparator: RequestPreparator? = BaseRequestPreparator()
     
@@ -60,13 +60,13 @@ public final class FlexNetService<T: FlexDecodable, E: DecodableError>: NSObject
             return nil
         }
         
-        logger.logRequest(request)
+        logger?.logRequest(request)
         preRequestCallback?()
         session.dataTask(with: urlRequest) { [weak self] (data, response, error) in
             guard let strongSelf = self else { return }
             
             strongSelf.currentResponse = BaseResponse(data: data, response: response, error: error)
-            strongSelf.logger.logResponse(strongSelf.currentResponse!)
+            strongSelf.logger?.logResponse(strongSelf.currentResponse!)
             strongSelf.responseHandler?.handleResponse(strongSelf.currentResponse!, completion: { [weak self] (result, clientError) in
                 defer {
                     self?.processEnd()
