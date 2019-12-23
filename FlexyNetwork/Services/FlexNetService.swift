@@ -9,6 +9,7 @@
 import Foundation
 
 public struct FlexNetServiceConfiguration {
+    public static var passAllAuthenticationChallengesWithDefaultHandling: Bool = false
     public static var urlSessionConfiguration: URLSessionConfiguration?
     public static var publicKeysForSSLPinningProvider: ((String) -> ([SSLPinningService.PublicKey]?))?
 }
@@ -278,6 +279,12 @@ public final class FlexNetService<T: FlexDecodable, E: DecodableError>: NSObject
     }
     
     public func urlSession(_ session: URLSession, didReceive challenge: URLAuthenticationChallenge, completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
+        guard !FlexNetServiceConfiguration.passAllAuthenticationChallengesWithDefaultHandling else {
+            completionHandler(.performDefaultHandling, nil)
+            
+            return
+        }
+        
         let protectionSpace = challenge.protectionSpace
         
         guard let trust = protectionSpace.serverTrust else {
