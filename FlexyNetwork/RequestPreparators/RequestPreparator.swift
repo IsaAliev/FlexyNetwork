@@ -10,6 +10,7 @@ import Foundation
 
 public protocol RequestPreparator {
     mutating func prepareRequest(_ request: inout HTTPRequestRepresentable)
+    mutating func mapRedirectRequest(_ request: URLRequest) -> URLRequest?
 }
 
 public extension RequestPreparator {
@@ -19,5 +20,9 @@ public extension RequestPreparator {
         } else {
             request.headerFields = fields
         }
+    }
+    
+    mutating func mapRedirectRequest(_ request: URLRequest) -> URLRequest? {
+        nil
     }
 }
