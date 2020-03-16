@@ -9,42 +9,54 @@
 import Foundation
 
 open class APIBuilder {
-    var dummyService = FlexNetService<FlexNever, FlexNever>()
+    private var logger: Logger?
+    private var headersHandler: HeadersHandler?
+    private var requestPreparator: RequestPreparator?
+    private var nestedModelGetter: NestedModelGetter?
+    private var successResponseChecker: SuccessResponseChecker?
+    private var request: HTTPRequestRepresentable?
+    private var errorHandler: ErrorHandler?
     
     public init() {}
     
     open func setLogger(_ logger: Logger) -> Self {
-        dummyService.logger = logger
+        self.logger = logger
         
         return self
     }
     
     open func setHeadersHandler(_ handler: HeadersHandler) -> Self {
-        dummyService.responseHandler?.headersHandler = handler
+        headersHandler = handler
         
         return self
     }
     
     open func setRequestPreparator(_ preparator: RequestPreparator) -> Self {
-        dummyService.requestPreparator = preparator
+        requestPreparator = preparator
         
         return self
     }
     
     open func setNestedModelGetter(_ modelGetter: NestedModelGetter) -> Self {
-        dummyService.responseHandler?.nestedModelGetter = modelGetter
+        nestedModelGetter = modelGetter
         
         return self
     }
     
     open func setSuccessResponseChecker(_ responseChecker: SuccessResponseChecker) -> Self {
-        dummyService.responseHandler?.successResponseChecker = responseChecker
+        successResponseChecker = responseChecker
         
         return self
     }
     
     open func setRequest(_ request: HTTPRequestRepresentable) -> Self {
-        dummyService.request = request
+        self.request = request
+        
+        return self
+    }
+    
+    open func setErrorHandler(_ handler: ErrorHandler) -> Self {
+        errorHandler = handler
         
         return self
     }
@@ -52,13 +64,14 @@ open class APIBuilder {
     open func build<T, E>(for responseType: T.Type, orError errorType: E.Type) -> FlexNetService<T, E> {
         let service = FlexNetService<T, E>()
         
-        service.request = dummyService.request
-        service.requestPreparator = dummyService.requestPreparator
-        service.logger = dummyService.logger
-        service.responseHandler?.headersHandler = dummyService.responseHandler?.headersHandler
-        service.responseHandler?.nestedModelGetter = dummyService.responseHandler?.nestedModelGetter
-        service.responseHandler?.successResponseChecker = dummyService.responseHandler?.successResponseChecker ?? BaseSuccessResponseChecker()
-
+        service.request = request
+        service.requestPreparator = requestPreparator
+        service.logger = logger
+        service.responseHandler?.headersHandler = headersHandler
+        service.responseHandler?.nestedModelGetter = nestedModelGetter
+        service.responseHandler?.successResponseChecker = successResponseChecker ?? BaseSuccessResponseChecker()
+        service.responseHandler?.errorHandler = errorHandler
+        
         return service
     }
 }

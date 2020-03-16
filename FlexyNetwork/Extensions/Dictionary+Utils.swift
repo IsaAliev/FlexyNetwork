@@ -13,6 +13,7 @@ extension Dictionary {
             self.setValue(newValue, forKeyPath: keyPath)
         }
     }
+    
     static private func keyPathKeys(forKeyPath: String) -> [Key]? {
         let keys = forKeyPath.split(separator: ".").map({ String($0) })
             .reversed().compactMap({ $0 as? Key })

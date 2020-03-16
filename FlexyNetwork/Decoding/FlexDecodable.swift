@@ -23,7 +23,7 @@ public extension FlexDecodable {
     }
 }
 
-public extension FlexDecodable where Self : Decodable {
+public extension FlexDecodable where Self: Decodable {
     static var jsonDecoder: JSONDecoder? {
         return JSONDecoder()
     }
@@ -33,7 +33,7 @@ public extension FlexDecodable where Self : Decodable {
     }
 }
 
-public extension FlexDecodable where Self : UIImage {
+public extension FlexDecodable where Self: UIImage {
     static func decodeFrom(_ data: Data) throws -> Self {
         guard let image = UIImage(data: data) else {
             throw FlexDecodableError.decodingDidFail
