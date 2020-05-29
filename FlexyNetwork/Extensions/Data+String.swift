@@ -9,9 +9,8 @@
 import Foundation
 
 extension Data {
-    mutating func append(_ value: BodyParameterValue) {
-        withUnsafePointer(to: value) { (ptr: UnsafePointer<BodyParameterValue>) in
-            append(UnsafeBufferPointer(start: ptr, count: 1))
-        }
+    mutating func append(_ string: String) {
+        let data = string.data(using: .utf8, allowLossyConversion: false)
+        append(data!)
     }
 }

@@ -41,7 +41,7 @@ public struct BodyCreator {
         for (key, value) in parameters {
             body.append(boundaryPrefix)
             body.append("Content-Disposition: form-data; name=\"\(key)\"\(crlf)")
-            body.append(value)
+            body.append("\(value)")
             body.append("\r\n")
         }
         
