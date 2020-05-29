@@ -8,6 +8,11 @@
 
 import Foundation
 
+public protocol BodyParameterValue { }
+
+extension Int: BodyParameterValue { }
+extension String: BodyParameterValue { }
+
 public struct BodyCreator {
     public struct FileData {
         var name: String
@@ -30,13 +35,13 @@ public struct BodyCreator {
         self.boundary = boundary
     }
     
-    public func createBody(parameters: [String: String], with files: [FileData]? = nil) -> Data {
+    public func createBody(parameters: [String: BodyParameterValue], with files: [FileData]? = nil) -> Data {
         var body = Data()
         
         for (key, value) in parameters {
             body.append(boundaryPrefix)
             body.append("Content-Disposition: form-data; name=\"\(key)\"\(crlf)")
-            body.append("\(value)")
+            body.append(value)
             body.append("\r\n")
         }
         
