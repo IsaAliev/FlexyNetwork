@@ -63,9 +63,9 @@ extension Array: FlexDecodable where Element: Decodable {
     }
 }
 
-protocol SnakeCaseDecodable: FlexDecodable {}
+public protocol SnakeCaseDecodable: FlexDecodable {}
 
-extension SnakeCaseDecodable {
+public extension SnakeCaseDecodable {
     static var jsonDecoder: JSONDecoder? {
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
@@ -74,20 +74,20 @@ extension SnakeCaseDecodable {
     }
 }
 
-struct SnakeCasedArray<E: Decodable>: Decodable, SnakeCaseDecodable {
+public struct SnakeCasedArray<E: Decodable>: Decodable, SnakeCaseDecodable {
     var array: Array<E>
     
-    static func decodeFrom(_ data: Data) throws -> SnakeCasedArray {
+    public static func decodeFrom(_ data: Data) throws -> SnakeCasedArray {
         let decodedArray = try jsonDecoder!.decode(Array<E>.self, from: data)
         
         return SnakeCasedArray(array: decodedArray)
     }
 }
 
-struct SnakeCasedDictionary<K: Decodable & Hashable, V: Decodable>: Decodable, SnakeCaseDecodable {
+public struct SnakeCasedDictionary<K: Decodable & Hashable, V: Decodable>: Decodable, SnakeCaseDecodable {
     var dictionary: Dictionary<K, V>
     
-    static func decodeFrom(_ data: Data) throws -> SnakeCasedDictionary {
+    public static func decodeFrom(_ data: Data) throws -> SnakeCasedDictionary {
         let decodedDictionary = try jsonDecoder!.decode(Dictionary<K, V>.self, from: data)
         
         return SnakeCasedDictionary(dictionary: decodedDictionary)
