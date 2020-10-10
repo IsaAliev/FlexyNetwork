@@ -68,13 +68,9 @@ public final class FlexNetService<T: FlexDecodable, E: DecodableError>: NSObject
             self.currentResponse = BaseResponse(data: data, response: response, error: error)
             self.logger?.logResponse(self.currentResponse!)
             self.responseHandler?.handleResponse(self.currentResponse!, completion: { [weak self] (result, clientError) in
-                defer {
-                    self?.processEnd()
-                }
+                defer { self?.processEnd() }
                 
-                guard let self = self else {
-                    return
-                }
+                guard let self = self else { return }
                 
                 guard let result = result else {
                     self.processError(clientError ?? .unknown)
@@ -98,7 +94,7 @@ public final class FlexNetService<T: FlexDecodable, E: DecodableError>: NSObject
                 }
             })
             
-            }.resume()
+        }.resume()
         
         return self
     }
@@ -214,37 +210,27 @@ public final class FlexNetService<T: FlexDecodable, E: DecodableError>: NSObject
     }
     
     private func processSuccess(_ model: T) {
-        dispatch { [weak self] in
-            self?.successHandler?(model)
-        }
+        dispatch { [weak self] in self?.successHandler?(model) }
     }
     
     private func processFailure(_ error: E) {
-        dispatch { [weak self] in
-            self?.failureHandler?(error)
-        }
+        dispatch { [weak self] in self?.failureHandler?(error) }
     }
     
     private func processError(_ error: ClientSideError) {
-        dispatch { [weak self] in
-            self?.errorHandler?(error, self?.currentResponse)
-        }
+        dispatch { [weak self] in self?.errorHandler?(error, self?.currentResponse) }
     }
     
     private func processEnd() {
+        dispatch { [weak self] in self?.endHandler?() }
+        
         if !mustNotInvalidateOnEnd {
             session.invalidateAndCancel()
-        }
-        
-        dispatch { [weak self] in
-            self?.endHandler?()
         }
     }
     
     private func processLastPage() {
-        dispatch { [weak self] in
-            self?.lastPageHandler?()
-        }
+        dispatch { [weak self] in self?.lastPageHandler?() }
     }
     
     private func dispatch(_ block: @escaping () -> ()) {
@@ -253,9 +239,7 @@ public final class FlexNetService<T: FlexDecodable, E: DecodableError>: NSObject
             return
         }
         
-        queue.async {
-            block()
-        }
+        queue.async { block() }
     }
     
     private func preparePagedRequestIfNeeded(with model: T) {
