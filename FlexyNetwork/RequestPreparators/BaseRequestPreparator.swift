@@ -6,8 +6,6 @@
 //  Copyright © 2018 IA. All rights reserved.
 //
 
-import Foundation
-
 public struct BaseRequestPreparator: RequestPreparator {
     public func prepareRequest(_ request: inout HTTPRequestRepresentable) {}
 }

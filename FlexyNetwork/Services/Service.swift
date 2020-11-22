@@ -15,7 +15,7 @@ public enum ClientSideError: String, Error {
     case sslPinningDidFail = "SSL pinning did fail"
     
     public func message() -> String {
-        return rawValue
+        rawValue
     }
 }
 

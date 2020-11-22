@@ -6,8 +6,6 @@
 //  Copyright © 2018 IA. All rights reserved.
 //
 
-import Foundation
-
 public protocol ErrorHandler {
     func handleError(_ error: DecodableError)
 }

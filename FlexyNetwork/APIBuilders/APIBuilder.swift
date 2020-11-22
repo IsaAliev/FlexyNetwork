@@ -16,6 +16,8 @@ open class APIBuilder {
     private var successResponseChecker: SuccessResponseChecker?
     private var request: HTTPRequestRepresentable?
     private var errorHandler: ErrorHandler?
+    private var sessionConfiguration: URLSessionConfiguration?
+    private var sslKeysProvider: SSLPinningKeysProvider?
     
     public init() {}
     
@@ -61,6 +63,18 @@ open class APIBuilder {
         return self
     }
     
+    open func setUrlSessionConfiguration(_ configuration: URLSessionConfiguration) -> Self {
+        sessionConfiguration = configuration
+        
+        return self
+    }
+    
+    open func setSSLPinningKeysProvider(_ provider: @escaping SSLPinningKeysProvider) -> Self {
+        sslKeysProvider = provider
+        
+        return self
+    }
+    
     open func build<T, E>(for responseType: T.Type, orError errorType: E.Type) -> FlexNetService<T, E> {
         let service = FlexNetService<T, E>()
         
@@ -71,6 +85,8 @@ open class APIBuilder {
         service.responseHandler?.nestedModelGetter = nestedModelGetter
         service.responseHandler?.successResponseChecker = successResponseChecker ?? BaseSuccessResponseChecker()
         service.responseHandler?.errorHandler = errorHandler
+        service.publicKeysForSSLPinningProvider = sslKeysProvider
+        service.urlSessionConfiguration = sessionConfiguration ?? .default
         
         return service
     }

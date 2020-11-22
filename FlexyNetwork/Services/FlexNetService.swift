@@ -8,10 +8,7 @@
 
 import Foundation
 
-public struct FlexNetServiceConfiguration {
-    public static var urlSessionConfiguration: URLSessionConfiguration?
-    public static var publicKeysForSSLPinningProvider: ((String) -> ([SSLPinningService.PublicKey]?))?
-}
+public typealias SSLPinningKeysProvider = (String) -> ([SSLPinningService.PublicKey]?)
 
 public final class FlexNetService<T: FlexDecodable, E: DecodableError>: NSObject, Service, URLSessionTaskDelegate {
     public typealias ResultType = T
@@ -22,6 +19,8 @@ public final class FlexNetService<T: FlexDecodable, E: DecodableError>: NSObject
     public var logger: Logger?
     public var preRequestCallback: (() -> ())?
     public var requestPreparator: RequestPreparator? = BaseRequestPreparator()
+    public var urlSessionConfiguration: URLSessionConfiguration = .default
+    public var publicKeysForSSLPinningProvider: SSLPinningKeysProvider?
     
     private var successHandler: SuccessHandlerBlock?
     private var failureHandler: FailureHandlerBlock?
@@ -37,7 +36,7 @@ public final class FlexNetService<T: FlexDecodable, E: DecodableError>: NSObject
     private var mustNotInvalidateOnEnd = false
     
     private lazy var session: URLSession = {
-        let session = URLSession(configuration: FlexNetServiceConfiguration.urlSessionConfiguration ?? .default,
+        let session = URLSession(configuration: urlSessionConfiguration,
                                  delegate: self,
                                  delegateQueue: nil)
         
@@ -281,7 +280,7 @@ public final class FlexNetService<T: FlexDecodable, E: DecodableError>: NSObject
             return
         }
         
-        guard let keys = FlexNetServiceConfiguration.publicKeysForSSLPinningProvider?(protectionSpace.host) else {
+        guard let keys = publicKeysForSSLPinningProvider?(protectionSpace.host) else {
             completionHandler(.useCredential, URLCredential(trust: trust))
             
             return

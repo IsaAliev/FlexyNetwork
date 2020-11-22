@@ -6,8 +6,6 @@
 //  Copyright © 2018 IA. All rights reserved.
 //
 
-import Foundation
-
 public protocol Logger {
     func logRequest(_ request: HTTPRequestRepresentable)
     func logResponse(_ response: ResponseRepresentable)

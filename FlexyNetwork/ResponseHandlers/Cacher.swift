@@ -6,8 +6,6 @@
 //  Copyright © 2018 Isa Aliev. All rights reserved.
 //
 
-import Foundation
-
 open class Cacher<T> {
     public init() {}
     

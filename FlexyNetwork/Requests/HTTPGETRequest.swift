@@ -6,22 +6,13 @@
 //  Copyright © 2018 IA. All rights reserved.
 //
 
-import Foundation
-
 public protocol HTTPGETRequest: HTTPRequestRepresentable { }
 
 public extension HTTPGETRequest {
-    var httpMethod: HTTPMethod {
-        return .GET
-    }
+    var httpMethod: HTTPMethod { .GET }
     
     var body: Data? {
-        get {
-            return nil
-        }
-        
-        set {
-            
-        }
+        get { nil }
+        set { }
     }
 }

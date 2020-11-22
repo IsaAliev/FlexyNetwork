@@ -6,14 +6,12 @@
 //  Copyright © 2018 IA. All rights reserved.
 //
 
-import Foundation
-
 public protocol PagedRequest: HTTPGETRequest {
-    mutating func prepareForNextWithCursor(_ cursor: String)
+    mutating func prepareForNextWithCursor(_ cursor: Any)
     mutating func resetToStart()
 }
 
 public protocol Pageable {
-    var nextCursor: String { get }
+    var nextCursor: Any { get }
     var isPagesDidEnd: Bool { get }
 }
