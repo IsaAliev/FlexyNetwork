@@ -71,6 +71,7 @@ APIBuilder()
 - [x] `RequestPreparator` - protocol for preparing request before sending it
 - [x] `NestedModelGetter` - protocol that allows you to get nested data from response
 - [x] `SuccessResponseChecker` - protocol for defining whether reposnse is successful or not
+- [x] `SSLPinningKeysProvider` - closure that provides keys to implement SSL pinning against specific host
 - [x] `HTTPRequestRepresentable`
 
 `FlexNetService` supports numerous callbacks:
@@ -81,16 +82,6 @@ APIBuilder()
 - [x] onEnd is called when reqeust is finished regardless success or failure
 - [x] onLastPage is called when using `PagedRequest` and there is no pages left
 - [x] onProgress is called when progress on POST request has changed
-
-## Easy SSL Pinning
-
-In order to use SSL Pinning in your reqeusts just set public keys provider closure of `FlexNetServiceConfiguration` class:
-
-```swift
-FlexNetServiceConfiguration.publicKeysForSSLPinningProvider = { host in
-    return [SSLPinningService.PublicKey("key", ofType: .RSA)]
-}
-```
 
 
 
