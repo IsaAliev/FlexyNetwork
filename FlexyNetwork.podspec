@@ -12,7 +12,7 @@ iOS Networking Framework for common tasks
 
   spec.author       = { "IsaAliev" => "isaaliev12@gmail.com" }
 
-  spec.platform     = :ios, "9.0"
+  spec.platform     = :ios, "11.0"
 
   spec.source       = { :git => "https://github.com/IsaAliev/FlexyNetwork.git", :tag => spec.version }
 
