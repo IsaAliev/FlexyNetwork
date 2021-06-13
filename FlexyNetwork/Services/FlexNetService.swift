@@ -8,6 +8,10 @@
 
 import Foundation
 
+#if canImport(Combine)
+import Combine
+#endif
+
 public typealias SSLPinningKeysProvider = (String) -> ([SSLPinningService.PublicKey]?)
 
 public final class FlexNetService<T: FlexDecodable, E: DecodableError>: NSObject, Service, URLSessionTaskDelegate {
@@ -42,8 +46,11 @@ public final class FlexNetService<T: FlexDecodable, E: DecodableError>: NSObject
         
         return session
     }()
+	
+	@available(iOS 13.0, *)
+	lazy var lastPagePublisher = PassthroughSubject<Void, Never>()
     
-    @discardableResult
+	@discardableResult
     public func sendRequest() -> FlexNetService<T, E>? {
         guard var request = request else {
             return nil
@@ -61,42 +68,40 @@ public final class FlexNetService<T: FlexDecodable, E: DecodableError>: NSObject
         
         logger?.logRequest(request)
         preRequestCallback?()
+		
         session.dataTask(with: urlRequest) { [weak self] (data, response, error) in
-            guard let self = self else { return }
-            
-            self.currentResponse = BaseResponse(data: data, response: response, error: error)
-            self.logger?.logResponse(self.currentResponse!)
-            self.responseHandler?.handleResponse(self.currentResponse!, completion: { [weak self] (result, clientError) in
-                defer { self?.processEnd() }
-                
-                guard let self = self else { return }
-                
-                guard let result = result else {
-                    self.processError(clientError ?? .unknown)
-                    
-                    return
-                }
-                
-                switch result {
-                case let .success(model):
-                    self.lastModel = model
-                    let isLast = self.processPagedRequestIfNeededWith(model)
-                    if isLast {
-                        if !(self.processOnlyLastPage) {
-                            self.processSuccess(model)
-                        }
-                    } else {
-                        self.processSuccess(model)
-                    }
-                case let .failure(error):
-                    self.processFailure(error)
-                }
-            })
-            
-        }.resume()
-        
-        return self
-    }
+			defer { self?.processEnd() }
+			
+			guard let self = self, let responseHandler = self.responseHandler else { return }
+			
+			self.currentResponse = BaseResponse(data: data, response: response, error: error)
+			self.logger?.logResponse(self.currentResponse!)
+			let (result, clientError) = responseHandler.handleResponse(self.currentResponse!)
+			
+			guard let result = result else {
+				self.processError(clientError ?? .unknown)
+				
+				return
+			}
+			
+			switch result {
+			case let .success(model):
+				self.lastModel = model
+				let isLast = self.processPagedRequestIfNeededWith(model)
+				if isLast {
+					if !(self.processOnlyLastPage) {
+						self.processSuccess(model)
+					}
+				} else {
+					self.processSuccess(model)
+				}
+			case let .failure(error):
+				self.processFailure(error)
+			}
+		}.resume()
+		
+		return self
+	}
     
     @discardableResult
     public func doNotInvalidateSessionOnRequestEnd() -> FlexNetService<T, E> {
@@ -229,6 +234,10 @@ public final class FlexNetService<T: FlexDecodable, E: DecodableError>: NSObject
     }
     
     private func processLastPage() {
+		if #available(iOS 13.0, *) {
+			lastPagePublisher.send()
+		}
+		
         dispatch { [weak self] in self?.lastPageHandler?() }
     }
     
@@ -297,3 +306,49 @@ public final class FlexNetService<T: FlexDecodable, E: DecodableError>: NSObject
     }
 }
 
+public extension FlexNetService {
+	@available(iOS 13.0, *)
+	func sendRequestPublisher() -> AnyPublisher<Result<T,E>, Error>? {
+		guard var request = request else {
+			return nil
+		}
+		
+		if processLastPageIfNeeded() {
+			return nil
+		}
+		
+		requestPreparator?.prepareRequest(&request)
+		
+		guard let urlRequest = request.urlRequest() else {
+			return nil
+		}
+		
+		logger?.logRequest(request)
+		preRequestCallback?()
+		
+		return session.dataTaskPublisher(for: urlRequest).map({ [weak self] res in
+			let bRes = BaseResponse(data: res.0, response: res.1, error: nil)
+			self?.currentResponse = bRes
+			self?.logger?.logResponse(bRes)
+			
+			return bRes
+		}).map({ [weak self] res in
+			return self?.responseHandler?.handleResponse(res)
+		}).tryMap({ res -> Result<T, E> in
+			guard let res = res?.0 else {
+				throw res?.1 ?? ClientSideError.unknown
+			}
+			
+			return res
+		}).filter({ [weak self] result in
+			guard let self = self else { return true }
+			switch result {
+			case let .success(model):
+				self.lastModel = model
+				let isLast = self.processPagedRequestIfNeededWith(model)
+				return !(isLast && self.processOnlyLastPage)
+			default: return true
+			}
+		}).eraseToAnyPublisher()
+	}
+}

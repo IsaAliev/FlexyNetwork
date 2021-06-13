@@ -28,40 +28,37 @@ public class HTTPResponseHandler<T: FlexDecodable, E: DecodableError>: ResponseH
     
     public init() {}
     
-    public func handleResponse(_ response: ResponseRepresentable, completion: (Result<T, E>?, ClientSideError?) -> ()) {
-        if let headers = (response.response as? HTTPURLResponse)?.allHeaderFields {
-            headersHandler?.handleHeaders(headers)
-        }
-        
-        if successResponseChecker.isSuccessResponse(response) {
-            processSuccessResponse(response, completion: completion)
-        } else {
-            processFailureResponse(response, completion: completion)
-        }
-    }
+	public func handleResponse(_ response: ResponseRepresentable) -> (Result<T, E>?, ClientSideError?) {
+		if let headers = (response.response as? HTTPURLResponse)?.allHeaderFields {
+			headersHandler?.handleHeaders(headers)
+		}
+		
+		if successResponseChecker.isSuccessResponse(response) {
+			return processSuccessResponse(response)
+		} else {
+			return processFailureResponse(response)
+		}
+	}
     
-    private func processSuccessResponse(_ response: ResponseRepresentable, completion: (Result<T, E>?, ClientSideError?) -> ()) {
+    private func processSuccessResponse(_ response: ResponseRepresentable) -> (Result<T, E>?, ClientSideError?) {
         guard var data = response.data else {
-            return
+            return (nil, nil)
         }
 
         if let nestedModelGetter = nestedModelGetter {
             if let escapedModelJSON = try? nestedModelGetter.getFrom(data) {
                 if isResponseRepresentSimpleType {
                     if let result = simpleTypeUsingNestedModelGetter(from: data) {
-                        completion(.success(result), nil)
-                        return
+                        return (.success(result), nil)
                     }
                     
-                    completion(nil, .modelProcessingError)
-                    return
+					return (nil, .modelProcessingError)
                 } else {
                     guard let model = escapedModelJSON[nestedModelGetter.escapedModelKey],
                         model is JSON || model is [JSON],
                         let serializedData = try? JSONSerialization.data(withJSONObject: model, options: [])
                         else {
-                            completion(nil, .modelProcessingError)
-                            return
+                            return (nil, .modelProcessingError)
                     }
                     
                     data = serializedData
@@ -70,13 +67,11 @@ public class HTTPResponseHandler<T: FlexDecodable, E: DecodableError>: ResponseH
         }
 
         guard let result = try? T.decodeFrom(data) else {
-            completion(nil, .modelProcessingError)
-            
-            return
+            return (nil, .modelProcessingError)
         }
         
         cacher?.cache(result)
-        completion(.success(result), nil)
+        return (.success(result), nil)
     }
     
     private func simpleTypeUsingNestedModelGetter(from data: Data) -> T? {
@@ -93,16 +88,16 @@ public class HTTPResponseHandler<T: FlexDecodable, E: DecodableError>: ResponseH
         return result
     }
     
-    
-    private func processFailureResponse(_ response: ResponseRepresentable, completion: (Result<T, E>?, ClientSideError?) -> ()) {
-        guard let data = response.data,
-            let error = try? E.decodeFrom(data) else {
-                completion(nil, .errorModelProcessingError)
-            
-            return
-        }
+	
+	private func processFailureResponse(_ response: ResponseRepresentable) -> (Result<T, E>?, ClientSideError?) {
+		guard let data = response.data,
+			  let error = try? E.decodeFrom(data) else {
+			return (nil, .errorModelProcessingError)
+		}
         
-        completion(.failure(error), nil)
+		let res: (Result<T, E>?, ClientSideError?) = (.failure(error), nil)
         errorHandler?.handleError(error)
+		
+		return res
     }
 }

@@ -16,6 +16,7 @@ public protocol ResponseHandler {
     associatedtype ResultType
     associatedtype ErrorType: DecodableError
     
-    func handleResponse(_ response: ResponseRepresentable,
-                        completion: (Result<ResultType, ErrorType>?, ClientSideError?) -> ())
+    func handleResponse(
+		_ response: ResponseRepresentable
+	) -> (Result<ResultType, ErrorType>?, ClientSideError?)
 }
