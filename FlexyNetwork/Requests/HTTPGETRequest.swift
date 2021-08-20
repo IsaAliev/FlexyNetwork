@@ -6,6 +6,8 @@
 //  Copyright © 2018 IA. All rights reserved.
 //
 
+import Foundation
+
 public protocol HTTPGETRequest: HTTPRequestRepresentable { }
 
 public extension HTTPGETRequest {

@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 
 enum FlexDecodableError: Error {
     case decodingDidFail
