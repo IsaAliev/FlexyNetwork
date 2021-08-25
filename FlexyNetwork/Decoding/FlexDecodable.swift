@@ -76,7 +76,7 @@ public extension SnakeCaseDecodable {
 }
 
 public struct SnakeCasedArray<E: Decodable>: Decodable, SnakeCaseDecodable {
-    var array: Array<E>
+    public var array: Array<E>
     
     public static func decodeFrom(_ data: Data) throws -> SnakeCasedArray {
         let decodedArray = try jsonDecoder!.decode(Array<E>.self, from: data)
@@ -86,7 +86,7 @@ public struct SnakeCasedArray<E: Decodable>: Decodable, SnakeCaseDecodable {
 }
 
 public struct SnakeCasedDictionary<K: Decodable & Hashable, V: Decodable>: Decodable, SnakeCaseDecodable {
-    var dictionary: Dictionary<K, V>
+    public var dictionary: Dictionary<K, V>
     
     public static func decodeFrom(_ data: Data) throws -> SnakeCasedDictionary {
         let decodedDictionary = try jsonDecoder!.decode(Dictionary<K, V>.self, from: data)
