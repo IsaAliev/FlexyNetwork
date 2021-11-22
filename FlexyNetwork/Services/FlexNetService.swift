@@ -47,9 +47,10 @@ public final class FlexNetService<T: FlexDecodable, E: DecodableError>: NSObject
         return session
     }()
 	
+#if canImport(Combine)
 	@available(iOS 13.0, *)
 	lazy var lastPagePublisher = PassthroughSubject<Void, Never>()
-    
+#endif
 	@discardableResult
     public func sendRequest() -> FlexNetService<T, E>? {
         guard var request = request else {
@@ -305,7 +306,7 @@ public final class FlexNetService<T: FlexDecodable, E: DecodableError>: NSObject
         completionHandler(.useCredential, URLCredential(trust: trust))
     }
 }
-
+#if canImport(Combine)
 public extension FlexNetService {
 	@available(iOS 13.0, *)
 	func sendRequestPublisher() -> AnyPublisher<Result<T,E>, Error>? {
@@ -352,3 +353,4 @@ public extension FlexNetService {
 		}).eraseToAnyPublisher()
 	}
 }
+#endif
