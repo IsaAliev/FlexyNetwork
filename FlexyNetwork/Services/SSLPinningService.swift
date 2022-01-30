@@ -45,10 +45,17 @@ public class SSLPinningService {
         }
     }
     
+    private let acceptableResults: [SecTrustResultType]
     private let allowedPublicKeys: [PublicKey]
+    
+    init(config: PinningConfig) {
+        self.allowedPublicKeys = config.keys
+        self.acceptableResults = config.acceptableCertifacteTrustEvaluationResults
+    }
     
     init(_ publicKeys: [PublicKey]) {
         allowedPublicKeys = publicKeys
+        acceptableResults = [.unspecified, .proceed]
     }
     
     func validateServerTrust(_ serverTrust: SecTrust) -> Bool {
@@ -139,9 +146,8 @@ public class SSLPinningService {
             
             SecTrustEvaluate(trust!, &result)
             
-            guard result == .unspecified ||
-                result == .proceed else {
-                    continue
+            guard acceptableResults.contains(result) else {
+                continue
             }
             
             if let key = SecTrustCopyPublicKey(trust!) {

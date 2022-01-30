@@ -12,7 +12,12 @@ import Foundation
 import Combine
 #endif
 
-public typealias SSLPinningKeysProvider = (String) -> ([SSLPinningService.PublicKey]?)
+public struct PinningConfig {
+    let keys: [SSLPinningService.PublicKey]
+    let acceptableCertifacteTrustEvaluationResults: [SecTrustResultType]
+}
+
+public typealias SSLPinningKeysProvider = (String) -> (PinningConfig?)
 
 public final class FlexNetService<T: FlexDecodable, E: DecodableError>: NSObject, Service, URLSessionTaskDelegate {
     public typealias ResultType = T
@@ -290,13 +295,13 @@ public final class FlexNetService<T: FlexDecodable, E: DecodableError>: NSObject
             return
         }
         
-        guard let keys = publicKeysForSSLPinningProvider?(protectionSpace.host) else {
+        guard let config = publicKeysForSSLPinningProvider?(protectionSpace.host) else {
             completionHandler(.useCredential, URLCredential(trust: trust))
             
             return
         }
         
-        guard SSLPinningService(keys).validateServerTrust(trust) else {
+        guard SSLPinningService(config: config).validateServerTrust(trust) else {
             completionHandler(.cancelAuthenticationChallenge, nil)
             processError(.sslPinningDidFail)
             
