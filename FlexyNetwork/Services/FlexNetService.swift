@@ -15,6 +15,11 @@ import Combine
 public struct PinningConfig {
     let keys: [SSLPinningService.PublicKey]
     let acceptableCertifacteTrustEvaluationResults: [SecTrustResultType]
+    
+    public init(keys: [SSLPinningService.PublicKey], acceptableCertifacteTrustEvaluationResults: [SecTrustResultType]) {
+        self.keys = keys
+        self.acceptableCertifacteTrustEvaluationResults = acceptableCertifacteTrustEvaluationResults
+    }
 }
 
 public typealias SSLPinningKeysProvider = (String) -> (PinningConfig?)
