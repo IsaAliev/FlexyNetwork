@@ -18,6 +18,10 @@ public protocol FlexDecodable {
     static func decodeFrom(_ data: Data) throws -> Self
 }
 
+public protocol StatusCodeContaining {
+    var statusCode: Int { get set }
+}
+
 public extension FlexDecodable {
     static var jsonDecoder: JSONDecoder? {
         return nil

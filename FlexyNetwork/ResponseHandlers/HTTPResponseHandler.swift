@@ -91,12 +91,20 @@ public class HTTPResponseHandler<T: FlexDecodable, E: DecodableError>: ResponseH
 	
 	private func processFailureResponse(_ response: ResponseRepresentable) -> (Result<T, E>?, ClientSideError?) {
 		guard let data = response.data,
-			  let error = try? E.decodeFrom(data) else {
+			  var error = try? E.decodeFrom(data)
+        else {
 			return (nil, .errorModelProcessingError)
 		}
         
-		let res: (Result<T, E>?, ClientSideError?) = (.failure(error), nil)
-        errorHandler?.handleError(error)
+        var resultingError = error
+        
+        if var codeContainer = error as? StatusCodeContaining {
+            codeContainer.statusCode = (response.response as? HTTPURLResponse)?.statusCode ?? -1
+            resultingError = codeContainer as! E
+        }
+        
+		let res: (Result<T, E>?, ClientSideError?) = (.failure(resultingError), nil)
+        errorHandler?.handleError(resultingError)
 		
 		return res
     }
