@@ -55,7 +55,7 @@ public class HTTPResponseHandler<T: FlexDecodable, E: DecodableError>: ResponseH
 					return (nil, .modelProcessingError)
                 } else {
                     guard let model = escapedModelJSON[nestedModelGetter.escapedModelKey],
-                        model is JSON || model is [JSON],
+                        model is JSON || model is [JSON] || model is [Any],
                         let serializedData = try? JSONSerialization.data(withJSONObject: model, options: [])
                         else {
                             return (nil, .modelProcessingError)
