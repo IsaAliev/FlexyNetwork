@@ -32,7 +32,7 @@ public final class FlexNetService<T: FlexDecodable, E: DecodableError>: NSObject
     public var request: HTTPRequestRepresentable?
     public var logger: Logger?
     public var preRequestCallback: (() -> ())?
-    public var requestPreparator: RequestPreparator? = BaseRequestPreparator()
+    public var requestPreparators: [RequestPreparator]? = []
     public var urlSessionConfiguration: URLSessionConfiguration = .default
     public var publicKeysForSSLPinningProvider: SSLPinningKeysProvider?
     
@@ -56,12 +56,12 @@ public final class FlexNetService<T: FlexDecodable, E: DecodableError>: NSObject
         
         return session
     }()
-	
+    
 #if canImport(Combine)
-	@available(iOS 13.0, *)
-	lazy var lastPagePublisher = PassthroughSubject<Void, Never>()
+    @available(iOS 13.0, *)
+    lazy var lastPagePublisher = PassthroughSubject<Void, Never>()
 #endif
-	@discardableResult
+    @discardableResult
     public func sendRequest() -> FlexNetService<T, E>? {
         guard var request = request else {
             return nil
@@ -70,9 +70,12 @@ public final class FlexNetService<T: FlexDecodable, E: DecodableError>: NSObject
         if processLastPageIfNeeded() {
             return self
         }
-        
-        requestPreparator?.prepareRequest(&request)
-        
+
+        requestPreparators?.forEach {
+            var requestPreparator = $0
+            requestPreparator.prepareRequest(&request)
+        }
+
         guard let urlRequest = request.urlRequest() else {
             return nil
         }
@@ -280,10 +283,20 @@ public final class FlexNetService<T: FlexDecodable, E: DecodableError>: NSObject
         }
     }
     
-    public func urlSession(_ session: URLSession, task: URLSessionTask, willPerformHTTPRedirection response: HTTPURLResponse, newRequest request: URLRequest, completionHandler: @escaping (URLRequest?) -> Void) {
-        if let mappedRequest = requestPreparator?.mapRedirectRequest(request) {
+    public func urlSession(
+        _ session: URLSession,
+        task: URLSessionTask,
+        willPerformHTTPRedirection response: HTTPURLResponse,
+        newRequest request: URLRequest,
+        completionHandler: @escaping (URLRequest?) -> Void
+    ) {
+        let lastRequestPreparator = requestPreparators?.last(where: {
+            var requestPreparator = $0
+            return requestPreparator.mapRedirectRequest(request) != nil
+        })
+        if var requestPreparator = lastRequestPreparator,
+           let mappedRequest = requestPreparator.mapRedirectRequest(request) {
             completionHandler(mappedRequest)
-            
             return
         }
         
@@ -328,8 +341,11 @@ public extension FlexNetService {
 			return nil
 		}
 		
-		requestPreparator?.prepareRequest(&request)
-		
+        requestPreparators?.forEach {
+            var requestPreparator = $0
+            requestPreparator.prepareRequest(&request)
+        }
+        
 		guard let urlRequest = request.urlRequest() else {
 			return nil
 		}

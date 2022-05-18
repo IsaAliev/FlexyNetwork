@@ -11,7 +11,7 @@ import Foundation
 open class APIBuilder {
     private var logger: Logger?
     private var headersHandler: HeadersHandler?
-    private var requestPreparator: RequestPreparator?
+    private var requestPreparators: [RequestPreparator]?
     private var nestedModelGetter: NestedModelGetter?
     private var successResponseChecker: SuccessResponseChecker?
     private var request: HTTPRequestRepresentable?
@@ -26,16 +26,21 @@ open class APIBuilder {
         
         return self
     }
-    
+
     open func setHeadersHandler(_ handler: HeadersHandler) -> Self {
         headersHandler = handler
         
         return self
     }
-    
+
+    open func addRequestPreparator(_ preparator: RequestPreparator) -> Self {
+        requestPreparators?.append(preparator)
+        return self
+    }
+
+    @available(*, deprecated, renamed: "addRequestPreparator")
     open func setRequestPreparator(_ preparator: RequestPreparator) -> Self {
-        requestPreparator = preparator
-        
+        requestPreparators?.append(preparator)
         return self
     }
     
@@ -79,7 +84,7 @@ open class APIBuilder {
         let service = FlexNetService<T, E>()
         
         service.request = request
-        service.requestPreparator = requestPreparator
+        service.requestPreparators = requestPreparators
         service.logger = logger
         service.responseHandler?.headersHandler = headersHandler
         service.responseHandler?.nestedModelGetter = nestedModelGetter
