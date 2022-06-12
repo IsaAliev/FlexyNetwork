@@ -290,17 +290,24 @@ public final class FlexNetService<T: FlexDecodable, E: DecodableError>: NSObject
         newRequest request: URLRequest,
         completionHandler: @escaping (URLRequest?) -> Void
     ) {
-        let lastRequestPreparator = requestPreparators?.last(where: {
-            var requestPreparator = $0
-            return requestPreparator.mapRedirectRequest(request) != nil
-        })
-        if var requestPreparator = lastRequestPreparator,
-           let mappedRequest = requestPreparator.mapRedirectRequest(request) {
-            completionHandler(mappedRequest)
+        guard let requestPreparators = requestPreparators else {
+            completionHandler(request)
             return
         }
         
-        completionHandler(request)
+        var newRequest = request
+        
+        for var prep in requestPreparators {
+            switch prep.handleRedirectRequest(request) {
+            case .cancel:
+                completionHandler(nil)
+                return
+            case let .proceed(request):
+                newRequest = request
+            }
+        }
+        
+        completionHandler(newRequest)
     }
     
     public func urlSession(_ session: URLSession, didReceive challenge: URLAuthenticationChallenge, completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {        

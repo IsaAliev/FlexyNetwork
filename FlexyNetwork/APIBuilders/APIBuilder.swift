@@ -11,7 +11,7 @@ import Foundation
 open class APIBuilder {
     private var logger: Logger?
     private var headersHandler: HeadersHandler?
-    private var requestPreparators: [RequestPreparator]?
+    private var requestPreparators: [RequestPreparator]? = []
     private var nestedModelGetter: NestedModelGetter?
     private var successResponseChecker: SuccessResponseChecker?
     private var request: HTTPRequestRepresentable?

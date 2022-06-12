@@ -8,9 +8,16 @@
 
 import Foundation
 
+public enum RedirectResolution {
+    case proceed(URLRequest)
+    case cancel
+}
+
 public protocol RequestPreparator {
     mutating func prepareRequest(_ request: inout HTTPRequestRepresentable)
+    @available(*, deprecated, message: "use handleRedirectRequest instead")
     mutating func mapRedirectRequest(_ request: URLRequest) -> URLRequest?
+    mutating func handleRedirectRequest(_ request: URLRequest) -> RedirectResolution
 }
 
 public extension RequestPreparator {
@@ -24,5 +31,9 @@ public extension RequestPreparator {
     
     mutating func mapRedirectRequest(_ request: URLRequest) -> URLRequest? {
         nil
+    }
+    
+    mutating func handleRedirectRequest(_ request: URLRequest) -> RedirectResolution {
+        .proceed(request)
     }
 }
