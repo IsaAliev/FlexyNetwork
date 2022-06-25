@@ -25,6 +25,11 @@ public struct PinningConfig {
 public typealias SSLPinningKeysProvider = (String) -> (PinningConfig?)
 
 public final class FlexNetService<T: FlexDecodable, E: DecodableError>: NSObject, Service, URLSessionTaskDelegate {
+    public struct AsyncResponse<T, E: Error> {
+        let result: Result<T, E>?
+        let isLastPage: Bool
+    }
+    
     public typealias ResultType = T
     public typealias ServerSideErrorType = E
     
@@ -57,26 +62,74 @@ public final class FlexNetService<T: FlexDecodable, E: DecodableError>: NSObject
         return session
     }()
     
-#if canImport(Combine)
-    @available(iOS 13.0, *)
-    lazy var lastPagePublisher = PassthroughSubject<Void, Never>()
-#endif
-    @discardableResult
-    public func sendRequest() -> FlexNetService<T, E>? {
+    private var currentURLRequest: URLRequest? {
         guard var request = request else {
             return nil
         }
         
-        if processLastPageIfNeeded() {
-            return self
-        }
-
         requestPreparators?.forEach {
             var requestPreparator = $0
             requestPreparator.prepareRequest(&request)
         }
+        
+        return request.urlRequest()
+    }
+    
+    @available(iOS 15.0, *)
+    public func sendRequest() async throws -> AsyncResponse<T, E>? {
+        if processLastPageIfNeeded() {
+            return .init(result: nil, isLastPage: true)
+        }
+        
+        guard let request = request,
+              let urlRequest = currentURLRequest,
+              let responseHandler = responseHandler
+        else { return nil }
+        
+        var result: Result<T, E>?
+        var clientError: ClientSideError?
+        
+        logger?.logRequest(request)
+        preRequestCallback?()
+        
+        do {
+            let (data, respone) = try await session.data(for: urlRequest)
+            currentResponse = BaseResponse(data: data, response: respone, error: nil)
+        } catch {
+            currentResponse = BaseResponse(data: nil, response: nil, error: error)
+        }
+        
+        (result, clientError) = responseHandler.handleResponse(currentResponse!)
+        
+        guard let result = result else {
+            throw clientError!
+        }
+        
+        switch result {
+        case let .success(model):
+            self.lastModel = model
+            let isLast = processPagedRequestIfNeededWith(model)
+            if isLast {
+                if !processOnlyLastPage {
+                    return .init(result: .success(model), isLastPage: true)
+                }
+            } else {
+                return .init(result: .success(model), isLastPage: false)
+            }
+        case let .failure(error):
+            return .init(result: .failure(error), isLastPage: false)
+        }
+        
+        return nil
+    }
+    
+    @discardableResult
+    public func sendRequest() -> FlexNetService<T, E>? {
+        if processLastPageIfNeeded() {
+            return self
+        }
 
-        guard let urlRequest = request.urlRequest() else {
+        guard let request = request, let urlRequest = currentURLRequest else {
             return nil
         }
         
@@ -249,7 +302,7 @@ public final class FlexNetService<T: FlexDecodable, E: DecodableError>: NSObject
     
     private func processLastPage() {
 		if #available(iOS 13.0, *) {
-			lastPagePublisher.send()
+//			lastPagePublisher.send()
 		}
 		
         dispatch { [weak self] in self?.lastPageHandler?() }
@@ -339,7 +392,7 @@ public final class FlexNetService<T: FlexDecodable, E: DecodableError>: NSObject
 #if canImport(Combine)
 public extension FlexNetService {
 	@available(iOS 13.0, *)
-	func sendRequestPublisher() -> AnyPublisher<Result<T,E>, Error>? {
+	func sendRequestPublisher() -> AnyPublisher<AsyncResponse<T, E>, Error>? {
 		guard var request = request else {
 			return nil
 		}
@@ -365,25 +418,32 @@ public extension FlexNetService {
 			self?.currentResponse = bRes
 			self?.logger?.logResponse(bRes)
 			
-			return bRes
-		}).map({ [weak self] res in
-			return self?.responseHandler?.handleResponse(res)
-		}).tryMap({ res -> Result<T, E> in
+            return bRes
+		})
+        .map({ [weak self] in
+            self?.responseHandler?.handleResponse($0)
+        })
+        .tryMap({ res -> Result<T, E> in
 			guard let res = res?.0 else {
 				throw res?.1 ?? ClientSideError.unknown
 			}
 			
 			return res
-		}).filter({ [weak self] result in
-			guard let self = self else { return true }
+		})
+        .map({ [weak self] result -> AsyncResponse<T, E> in
+            guard let self = self else { return AsyncResponse<T, E>(result: nil, isLastPage: false) }
+
 			switch result {
 			case let .success(model):
 				self.lastModel = model
 				let isLast = self.processPagedRequestIfNeededWith(model)
-				return !(isLast && self.processOnlyLastPage)
-			default: return true
+
+                return AsyncResponse(result: result, isLastPage: isLast)
+            case .failure:
+                return AsyncResponse(result: result, isLastPage: false)
 			}
-		}).eraseToAnyPublisher()
+		})
+        .eraseToAnyPublisher()
 	}
 }
 #endif

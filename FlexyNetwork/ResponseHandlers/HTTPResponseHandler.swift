@@ -91,7 +91,7 @@ public class HTTPResponseHandler<T: FlexDecodable, E: DecodableError>: ResponseH
 	
 	private func processFailureResponse(_ response: ResponseRepresentable) -> (Result<T, E>?, ClientSideError?) {
 		guard let data = response.data,
-			  var error = try? E.decodeFrom(data)
+			  let error = try? E.decodeFrom(data)
         else {
 			return (nil, .errorModelProcessingError)
 		}
