@@ -19,6 +19,13 @@ public struct BodyCreator {
         var fileName: String
         var mimeType: String
         var data: Data
+
+        public init(name: String, fileName: String, mimeType: String, data: Data) {
+            self.name = name
+            self.fileName = fileName
+            self.mimeType = mimeType
+            self.data = data
+        }
     }
     
     var boundary: String
