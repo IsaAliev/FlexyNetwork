@@ -16,6 +16,7 @@ enum FlexDecodableError: Error {
 public protocol FlexDecodable {
     static var jsonDecoder: JSONDecoder? { get }
     static func decodeFrom(_ data: Data) throws -> Self
+    static func decodeFrom(_ data: Data, with decoder: JSONDecoder) throws -> Self
 }
 
 public protocol StatusCodeContaining {
@@ -36,6 +37,10 @@ public extension FlexDecodable where Self: Decodable {
     static func decodeFrom(_ data: Data) throws -> Self {
         return try jsonDecoder!.decode(Self.self, from: data)
     }
+    
+    static func decodeFrom(_ data: Data, with decoder: JSONDecoder) throws -> Self {
+        return try decoder.decode(Self.self, from: data)
+    }
 }
 
 public extension FlexDecodable where Self: UIImage {
@@ -45,6 +50,10 @@ public extension FlexDecodable where Self: UIImage {
         }
         
         return image as! Self
+    }
+    
+    static func decodeFrom(_ data: Data, with decoder: JSONDecoder) throws -> Self {
+        return try decodeFrom(data)
     }
 }
 

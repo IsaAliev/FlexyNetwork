@@ -25,9 +25,9 @@ public struct PinningConfig {
 public typealias SSLPinningKeysProvider = (String) -> (PinningConfig?)
 
 public final class FlexNetService<T: FlexDecodable, E: DecodableError>: NSObject, Service, URLSessionTaskDelegate {
-    public struct AsyncResponse<T, E: Error> {
-        let result: Result<T, E>?
-        let isLastPage: Bool
+    public struct AsyncResponse<R, F: Error> {
+        public let result: Result<R, F>?
+        public let isLastPage: Bool
     }
     
     public typealias ResultType = T

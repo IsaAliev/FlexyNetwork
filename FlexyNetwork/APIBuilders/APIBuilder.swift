@@ -18,6 +18,7 @@ open class APIBuilder {
     private var errorHandler: ErrorHandler?
     private var sessionConfiguration: URLSessionConfiguration?
     private var sslKeysProvider: SSLPinningKeysProvider?
+    private var masterDecoder: FNDecoder?
     
     public init() {}
     
@@ -80,6 +81,12 @@ open class APIBuilder {
         return self
     }
     
+    open func setMasterDecoder(_ decoder: FNDecoder) -> Self {
+        masterDecoder = decoder
+        
+        return self
+    }
+    
     open func build<T, E>(for responseType: T.Type, orError errorType: E.Type) -> FlexNetService<T, E> {
         let service = FlexNetService<T, E>()
         
@@ -90,6 +97,7 @@ open class APIBuilder {
         service.responseHandler?.nestedModelGetter = nestedModelGetter
         service.responseHandler?.successResponseChecker = successResponseChecker ?? BaseSuccessResponseChecker()
         service.responseHandler?.errorHandler = errorHandler
+        service.responseHandler?.decoder = masterDecoder
         service.publicKeysForSSLPinningProvider = sslKeysProvider
         service.urlSessionConfiguration = sessionConfiguration ?? .default
         

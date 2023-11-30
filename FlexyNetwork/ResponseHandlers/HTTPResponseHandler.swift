@@ -25,6 +25,7 @@ public class HTTPResponseHandler<T: FlexDecodable, E: DecodableError>: ResponseH
     open var nestedModelGetter: NestedModelGetter?
     open var cacher: Cacher<T>?
     open var headersHandler: HeadersHandler?
+    open var decoder: FNDecoder?
     
     public init() {}
     
@@ -65,8 +66,18 @@ public class HTTPResponseHandler<T: FlexDecodable, E: DecodableError>: ResponseH
                 }
             }
         }
+        
+        var result: T?
+        
+        if let decoder {
+            result = try? (decoder.decode(data) as T)
+        }
+        
+        if result == nil {
+            result = try? T.decodeFrom(data)
+        }
 
-        guard let result = try? T.decodeFrom(data) else {
+        guard let result else {
             return (nil, .modelProcessingError)
         }
         
